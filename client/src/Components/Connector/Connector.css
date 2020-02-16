@@ -1,0 +1,33 @@
+.carImage-left-3 {
+    position: relative;
+    right: 150px;
+}
+
+.carImage-left-2 {
+    position: relative;
+    right: 100px;
+}
+
+.carImage-left-1 {
+    position: relative;
+    right: 50px;
+}
+
+.carImage-right-3 {
+    position: relative;
+    left: 150px;
+}
+
+.carImage-right-2 {
+    position: relative;
+    left: 100px;
+}
+
+.carImage-right-1 {
+    position: relative;
+    left: 50px;
+}
+
+carImage-middle {
+    position: relative;
+}
