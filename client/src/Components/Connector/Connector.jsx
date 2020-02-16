@@ -1,15 +1,19 @@
 import React, {Component} from 'react'
 import io from 'socket.io-client';
-import car from "../Models/Car";
 import carImg from "../../assets/images.jpg"
 import "./Connector.css"
+import '../../App.css';
+import {LeftRoadSide, RightRoadSide} from "../Road/RoadSide";
 
-class Connector extends Component {
+
+const port = 5000; // Server port. TODO: import form server.js once they are under the same src
+
+export class Connector extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            dataMessage:{
+            dataMessage: {
                 horizontalPosition: 0,
                 verticalPosition: 0,
                 speed: 0,
@@ -23,7 +27,16 @@ class Connector extends Component {
 
     componentDidMount() {
         console.log("component mounted" + this.state.dataMessage);
-        this.socket = io("http://localhost:5000"); // Add heroku URL
+        this.socket = io.connect("http://localhost:" + port, { // TODO: can be changed to IPv4 during demo.
+            reconnectionDelay: 1000,
+            reconnection: true,
+            reconnectionAttempts: 10,
+            transports: ['websocket'],
+            agent: false,
+            upgrade: false,
+            rejectUnauthorized: false
+        });
+        console.log("connecting to server on :",); // Add heroku URL
         this.socket.on("message", data => {
             this.setState({dataMessage: data});
         });
@@ -45,7 +58,7 @@ class Connector extends Component {
 
     acceleratorPress() {
         const accelerationSpeed = 10;
-        const maxSpeed = 150;
+        const maxSpeed = 100;
         let currentMessage = this.state.dataMessage;
         if (currentMessage.speed < maxSpeed) {
             currentMessage.speed += accelerationSpeed;
@@ -56,13 +69,12 @@ class Connector extends Component {
     }
 
     breakPressed() {
-        const breakingSpeed = 20;
+        const breakingSpeed = 10;
         const minSpeed = 0;
         let currentMessage = this.state.dataMessage;
-        if (currentMessage.speed - breakingSpeed >= minSpeed){
-           currentMessage.speed -= breakingSpeed;
-        }
-        else {
+        if (currentMessage.speed - breakingSpeed >= minSpeed) {
+            currentMessage.speed -= breakingSpeed;
+        } else {
             currentMessage.speed = minSpeed;
         }
 
@@ -74,44 +86,50 @@ class Connector extends Component {
     turningLeft() {
         let currentMessage = this.state.dataMessage;
         let maxLeft = -3;
-        if (currentMessage.horizontalPosition -1 >= maxLeft){
-            currentMessage.horizontalPosition -=1;
+        if (currentMessage.horizontalPosition - 1 >= maxLeft) {
+            currentMessage.horizontalPosition -= 1;
         }
-        this.setState({dataMessage:currentMessage});
+        this.setState({dataMessage: currentMessage});
         return currentMessage
     }
 
     turningRight() {
         let currentMessage = this.state.dataMessage;
         let maxRight = 3;
-        if (currentMessage.horizontalPosition + 1 <= maxRight){
-            currentMessage.horizontalPosition +=1;
+        if (currentMessage.horizontalPosition + 1 <= maxRight) {
+            currentMessage.horizontalPosition += 1;
         }
-        this.setState({dataMessage:currentMessage});
+        this.setState({dataMessage: currentMessage});
         return currentMessage
     }
 
     render() {
 
+        let speed = this.state.dataMessage.speed;
+        let clutch = this.state.dataMessage.isClutchDown;
+        let horizontalPosition = this.state.dataMessage.horizontalPosition;
+
+
+
         let carImagePosition;
         switch (this.state.dataMessage.horizontalPosition) {
             case 3:
-                carImagePosition ="carImage-right-3";
+                carImagePosition = "carImage-right-3";
                 break;
             case 2:
-                carImagePosition ="carImage-right-2";
+                carImagePosition = "carImage-right-2";
                 break;
             case 1:
-                carImagePosition ="carImage-right-1";
+                carImagePosition = "carImage-right-1";
                 break;
             case -1:
-                carImagePosition ="carImage-left-1";
+                carImagePosition = "carImage-left-1";
                 break;
             case -2:
-                carImagePosition ="carImage-left-2";
+                carImagePosition = "carImage-left-2";
                 break;
             case -3:
-                carImagePosition ="carImage-left-3";
+                carImagePosition = "carImage-left-3";
                 break;
             default:
                 carImagePosition = "carImage-middle";
@@ -122,20 +140,6 @@ class Connector extends Component {
 
         return (
             <div>
-                <div>
-                    <p>
-                        Speed ->{this.state.dataMessage.speed}
-                    </p>
-                    <p>
-                        Clutch ->{this.state.dataMessage.isClutchDown.toString()}
-                    </p>
-                    <p>
-                        Left/Right ->{this.state.dataMessage.horizontalPosition}
-                    </p>
-
-                </div>
-
-
                 <div>
                     <button onClick={() => this.submitData(this.acceleratorPress())}>
                         accelerate
@@ -158,11 +162,62 @@ class Connector extends Component {
                     </button>
                 </div>
 
-                <img className={carImagePosition} src={carImg} alt={"car"}/>
+
+            <div className="row">
+                {/*TODO: change these into css classes*/}
+                <div style={{"margin-right": "90%" }}>
+                    <LeftRoadSide speed={speed}/>
+                </div>
+                <TestCarAndControls
+                    carPosition={carImagePosition}
+                    speed={speed}
+                    clutch={clutch}
+                    horizontalPosition={horizontalPosition}
+                />
+                {/*TODO: change these into css classes*/}
+                <div style={{"margin-left": "90%" }}>
+                    <RightRoadSide speed={speed}/>
+                </div>
 
             </div>
+            </div>
+
+
         );
     }
 }
 
-export default Connector
+
+export class TestCarAndControls extends Component {
+    render() {
+        let carImagePosition = this.props.carPosition;
+        let speed = this.props.speed;
+        let clutch = this.props.clutch;
+        let horizontalPosition = this.props.horizontalPosition;
+        return (
+            <div>
+
+                <div>
+
+                    <div>
+                        <p>
+                            Speed ->{speed}
+                        </p>
+                        <p>
+                            Clutch ->{clutch.toString()}
+                        </p>
+                        <p>
+                            Left/Right ->{horizontalPosition}
+                        </p>
+
+                    </div>
+
+
+                    <img className={carImagePosition} src={carImg} alt={"car"}/>
+
+                </div>
+            </div>
+
+        );
+    }
+}
