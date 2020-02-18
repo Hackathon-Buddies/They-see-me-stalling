@@ -4,6 +4,7 @@ import carImg from "../../assets/images.jpg"
 import "./Connector.css"
 import '../../App.css';
 import {LeftRoadSide, RightRoadSide} from "../Road/RoadSide";
+import ReactDOM from "react-dom";
 
 
 const port = 5000; // Server port. TODO: import form server.js once they are under the same src
@@ -110,7 +111,6 @@ export class Connector extends Component {
         let horizontalPosition = this.state.dataMessage.horizontalPosition;
 
 
-
         let carImagePosition;
         switch (this.state.dataMessage.horizontalPosition) {
             case 3:
@@ -163,23 +163,23 @@ export class Connector extends Component {
                 </div>
 
 
-            <div className="row">
-                {/*TODO: change these into css classes*/}
-                <div style={{"margin-right": "90%" }}>
-                    <LeftRoadSide speed={speed}/>
-                </div>
-                <TestCarAndControls
-                    carPosition={carImagePosition}
-                    speed={speed}
-                    clutch={clutch}
-                    horizontalPosition={horizontalPosition}
-                />
-                {/*TODO: change these into css classes*/}
-                <div style={{"margin-left": "90%" }}>
-                    <RightRoadSide speed={speed}/>
-                </div>
+                <div className="row">
+                    {/*TODO: change these into css classes*/}
+                    <div style={{"margin-right": "90%"}}>
+                        <LeftRoadSide speed={speed}/>
+                    </div>
+                    <TestCarAndControls
+                        carPosition={carImagePosition}
+                        speed={speed}
+                        clutch={clutch}
+                        horizontalPosition={horizontalPosition}
+                    />
+                    {/*TODO: change these into css classes*/}
+                    <div style={{"margin-left": "90%"}}>
+                        <RightRoadSide speed={speed}/>
+                    </div>
 
-            </div>
+                </div>
             </div>
 
 
@@ -189,6 +189,44 @@ export class Connector extends Component {
 
 
 export class TestCarAndControls extends Component {
+
+    /**
+     *  Player position stuff
+     */
+
+    constructor(props) {
+        super(props);
+        this.playerRef = React.createRef();
+        this.state = {gameTimer: 0}
+    }
+
+
+    componentDidMount() {
+        // Game time handler
+        this.gameTimeInterval = setInterval(() => {
+            this.setState(({gameTimer}) => ({
+                gameTimer: gameTimer + 1
+            }))
+        }, 1000)
+
+
+    }
+
+    componentDidUpdate() {
+        this.positionBindingHandler(this.playerRef.current);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.gameTimeInterval)
+    }
+
+    positionBindingHandler = (ref) => {
+        let elementPosition = ReactDOM.findDOMNode(ref).getBoundingClientRect(); // use this.ref.current
+        console.log("Player position is: ", elementPosition);
+        return elementPosition;
+    };
+
+
     render() {
         let carImagePosition = this.props.carPosition;
         let speed = this.props.speed;
@@ -213,7 +251,7 @@ export class TestCarAndControls extends Component {
                     </div>
 
 
-                    <img className={carImagePosition} src={carImg} alt={"car"}/>
+                    <img className={carImagePosition} ref={this.playerRef} src={carImg} alt={"car"}/>
 
                 </div>
             </div>

@@ -1,14 +1,49 @@
 import React, {Component} from "react";
 import treeImg from "../../assets/test-tree.png"
-import "./RoadAnimations.css"
+import "./RoadAnimations.css";
+import ReactDOM from 'react-dom';
+
 
 export class LeftRoadSide extends Component {
+
+
+    constructor(props) {
+        super(props);
+        this.treeRef1 = React.createRef();
+        this.state = {gameTimer: 0};
+    }
+
+    componentDidMount() {
+        this.gameTimeInterval = setInterval(() => {
+            this.setState(({gameTimer}) => ({
+                gameTimer: gameTimer + 1
+            }))
+        }, 1000)
+    }
+
+
+    componentDidUpdate() {
+        this.positionBindingHandler(this.treeRef1.current);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.gameTimeInterval)
+    }
+
+
+    positionBindingHandler = (ref) => {
+        let elementPosition = ReactDOM.findDOMNode(ref).getBoundingClientRect(); // use this.ref
+        console.log("Tree position is: ", elementPosition);
+        return elementPosition;
+    };
+
+
     render() {
         let speed = this.props.speed;
         return (
             <div className="leftSideColumn">
 
-                <img src={treeImg} alt={"tree"} className={sideAnimationController(speed)}/>
+                <img src={treeImg} ref={this.treeRef1} alt={"tree"} className={sideAnimationController(speed)}/>
                 <img src={treeImg} alt={"tree"} className={sideAnimationController(speed)}/>
                 <img src={treeImg} alt={"tree"} className={sideAnimationController(speed)}/>
                 <img src={treeImg} alt={"tree"} className={sideAnimationController(speed)}/>
@@ -44,7 +79,7 @@ const sideAnimationController = (speed) => {
     switch (true) {
 
         case (speed <= 0):
-            console.log("stopped at speed: ", speed)
+            console.log("stopped at speed: ", speed);
             sideAnimation = "sideImg";
             break;
 
@@ -67,24 +102,24 @@ const sideAnimationController = (speed) => {
 
             sideAnimation = "sideImg side-animation-speed-4";
             break;
-        case ( 49 < speed && speed < 59):
+        case (49 < speed && speed < 59):
             console.log("speed animation 5 at speed: ", speed);
 
             sideAnimation = "sideImg side-animation-speed-5";
             break;
-        case ( 59 < speed && speed < 69):
+        case (59 < speed && speed < 69):
             console.log("speed animation 6 at speed: ", speed);
 
             sideAnimation = "sideImg side-animation-speed-6";
             break;
 
-        case ( 69 < speed && speed < 79):
+        case (69 < speed && speed < 79):
             console.log("speed animation 7 at speed: ", speed);
 
             sideAnimation = "sideImg side-animation-speed-7";
             break;
 
-        case ( 79 < speed):
+        case (79 < speed):
             console.log("speed animation 7 at speed: ", speed);
 
             sideAnimation = "sideImg side-animation-speed-7";
