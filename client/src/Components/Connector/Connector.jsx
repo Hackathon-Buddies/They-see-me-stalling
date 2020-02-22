@@ -380,11 +380,11 @@ export class TestCarAndControls extends Component {
 
         const positionVariant = 90; // A relative value for error because detection may not be pixel perfect.
 
-        let playerX = playerPosition.x;
-        let playerY = playerPosition.y;
+        let playerX = playerPosition.x + playerPosition.height/2;
+        let playerY = playerPosition.y + playerPosition.width/2;
 
-        let npcX = npcPosition.x;
-        let npcY = npcPosition.y;
+        let npcX = npcPosition.x + npcPosition.height/2;
+        let npcY = npcPosition.y - npcPosition.width/2;
 
         return Math.abs(playerX - npcX) < positionVariant && (Math.abs(playerY - npcY) < positionVariant);
 
