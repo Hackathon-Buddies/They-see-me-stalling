@@ -11,7 +11,7 @@ import ReactDOM from "react-dom";
 
 const port = 5000; // Server port. TODO: import form server.js once they are under the same src
 
-export class Connector extends Component {
+export default class Connector extends Component {
 
     constructor(props) {
         super(props);
@@ -134,11 +134,8 @@ export class Connector extends Component {
                 break;
             default:
                 carImagePosition = "carImage-middle playerCar";
-
-
         }
-
-
+        document.body.style.backgroundColor = "white";
         return (
             <div>
                 <div>
@@ -182,8 +179,6 @@ export class Connector extends Component {
 
                 </div>
             </div>
-
-
         );
     }
 }
@@ -317,7 +312,6 @@ export class TestCarAndControls extends Component {
 
 
                     <div className="carDiv">
-
                         <img className={carImagePosition} ref={this.playerRef} src={carImg} alt={"car"}/>
                         <img className={npc1Class} ref={this.npcRef1} src={npcCar} alt={"npcCar1"}/>
                         <img className={npc2Class} ref={this.npcRef2} src={npcCar} alt={"npcCar2"}/>

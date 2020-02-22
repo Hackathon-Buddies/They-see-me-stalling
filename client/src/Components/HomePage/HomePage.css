@@ -1,0 +1,21 @@
+.background {
+    height:650px;
+    align-content: center;
+    flex: auto;
+    background: url("../../assets/home2.gif") no-repeat;
+    background-size: cover;
+}
+
+
+.HomeButton{
+    top: 650px;
+    color: white;
+    font-family: "Brush Script MT";
+    font-size: 350%;
+    text-align: center;
+    position: relative;
+    background-color: #000F42;
+    border:#000F42
+
+
+}
