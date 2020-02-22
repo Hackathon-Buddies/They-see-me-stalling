@@ -25,7 +25,11 @@ export default class Connector extends Component {
                 isClutchDown: false,
                 isAccelerating: false,
                 isBraking: false,
-                currentHealth: 100
+                currentHealth: 100,
+                showingNPCinLane1: false,
+                showingNPCinLane2: false,
+                showingNPCinLane3: false,
+
             }
         };
     }
@@ -163,6 +167,21 @@ export default class Connector extends Component {
         return currentMessage
     }
 
+    spawnNPC(bool, lane) {
+        let currentMessage = this.state.dataMessage;
+        if (lane === 1) {
+            currentMessage.showingNPCinLane1 = bool;
+
+        } else if (lane === 2) {
+            currentMessage.showingNPCinLane2 = bool;
+        } else if (lane === 3) {
+            currentMessage.showingNPCinLane3 = bool;
+        }
+
+        this.setState({dataMessage: currentMessage});
+        return currentMessage;
+    }
+
     render() {
         let speed = this.state.dataMessage.speed;
 
@@ -199,6 +218,10 @@ export default class Connector extends Component {
         return (
             <div>
                 <div>
+                    <p>Showing npc lane 1 ->{this.state.dataMessage.showingNPCinLane1.toString()}</p>
+                    <p>Showing npc lane 2 ->{this.state.dataMessage.showingNPCinLane2.toString()}</p>
+                    <p>Showing npc lane 3 ->{this.state.dataMessage.showingNPCinLane3.toString()}</p>
+
                     <button
                         onMouseDown={() => this.submitData(this.accelerateDown())}
                         onMouseUp={() => this.submitData(this.accelerateUp())}
@@ -230,12 +253,14 @@ export default class Connector extends Component {
                     <button onClick={() => this.submitData(this.turningRight())}>
                         right
                     </button>
+
+
                 </div>
 
 
                 <div className="row">
                     {/*TODO: change these into css classes*/}
-                    <div style={{"margin-right": "90%"}}>
+                    <div style={{"marginRight": "90%"}}>
                         <LeftRoadSide speed={speed}/>
                     </div>
                     <TestCarAndControls
@@ -248,9 +273,13 @@ export default class Connector extends Component {
                         accelerate = {this.accelerate.bind(this)}
                         isBraking = {isBraking}
                         brake = {this.brake.bind(this)}
+                        showingNPCinLane1={this.state.dataMessage.showingNPCinLane1}
+                        showingNPCinLane2={this.state.dataMessage.showingNPCinLane2}
+                        showingNPCinLane3={this.state.dataMessage.showingNPCinLane3}
+                        spawnNPC={this.spawnNPC.bind(this)}
                     />
                     {/*TODO: change these into css classes*/}
-                    <div style={{"margin-left": "90%"}}>
+                    <div style={{"marginLeft": "90%"}}>
                         <RightRoadSide speed={speed}/>
                     </div>
 
@@ -297,7 +326,7 @@ export class TestCarAndControls extends Component {
 
     }
 
-    componentDidUpdate(prevState) {
+    componentDidUpdate() {
         let playerPosition = this.positionBindingHandler(this.playerRef.current);
         let npc1Position = this.positionBindingHandler(this.npcRef1.current);
         let npc2Position = this.positionBindingHandler(this.npcRef2.current);
@@ -318,6 +347,7 @@ export class TestCarAndControls extends Component {
             //this.props.accelerate();
         }
     }
+
 
     componentWillUnmount() {
         clearInterval(this.gameTimeInterval)
@@ -340,6 +370,23 @@ export class TestCarAndControls extends Component {
         return Math.abs(playerX - npcX) < positionVariant && (Math.abs(playerY - npcY) < positionVariant);
 
     }
+
+    npcSpawnHandler(lanePosition, speed) {
+        let animationClass = "";
+        if (this.props.showingNPCinLane1) {
+            animationClass = `carImage-left-3 npcCarImage${npcAnimationHandler(speed)}`;
+        }
+
+        if (this.props.showingNPCinLane2) {
+            animationClass = `carImage-middle npcCarImage${npcAnimationHandler(speed)}`;
+        }
+
+        if (this.props.showingNPCinLane3) {
+            animationClass = `carImage-right-3 npcCarImage${npcAnimationHandler(speed)}`;
+        }
+        return animationClass
+
+    };
 
     collisionController(playerPosition, npc1Position, npc2Position, npc3Position) {
         if (
@@ -380,14 +427,35 @@ export class TestCarAndControls extends Component {
         let isBraking = this.props.isBraking;
         let clutch = this.props.clutch;
 
-        let npc1Class = `carImage-left-3 npcCarImage${npcAnimationHandler(speed)}`;
-        let npc2Class = `carImage-middle npcCarImage${npcAnimationHandler(speed)}`;
-        let npc3Class = `carImage-right-3 npcCarImage${npcAnimationHandler(speed)}`;
+        let npc1Class = this.npcSpawnHandler(1, speed);
+        let npc2Class = this.npcSpawnHandler(2, speed);
+        let npc3Class = this.npcSpawnHandler(3, speed);
 
         return (
             <div>
                 <div>
                     <div>
+                        <button onClick={() => {
+                            this.props.spawnNPC(true, 1);
+                            this.npcSpawnHandler(1, speed);
+                        }}>true 1
+                        </button>
+                        <button onClick={() => {
+                            this.props.spawnNPC(false, 1)
+                        }}>false 1
+                        </button>
+
+                        <button onClick={() => {
+                            this.props.spawnNPC(true, 2);
+                            this.npcSpawnHandler(2, speed);
+                        }}>true 2</button>
+                        <button onClick={() => this.props.spawnNPC(false, 2)}>false 2</button>
+
+                        <button onClick={() => {
+                            this.props.spawnNPC(true, 3);
+                            this.npcSpawnHandler(3, speed);
+                        }}>true 3</button>
+                        <button onClick={() => this.props.spawnNPC(false, 3)}>false 3</button>
                         <p>
                             Speed ->{speed}
                         </p>
@@ -409,9 +477,9 @@ export class TestCarAndControls extends Component {
                     </div>
                     <div className="carDiv">
                         <img className={carImagePosition} ref={this.playerRef} src={carImg} alt={"car"}/>
-                        <img className={npc1Class} ref={this.npcRef1} src={npcCar} alt={"npcCar1"}/>
-                        <img className={npc2Class} ref={this.npcRef2} src={npcCar} alt={"npcCar2"}/>
-                        <img className={npc3Class} ref={this.npcRef3} src={npcCar} alt={"npcCar3"}/>
+                        <img className={npc1Class} ref={this.npcRef1} src="{npcCar}" alt={"npcCar1"}/>
+                        <img className={npc2Class} ref={this.npcRef2} src="{npcCar}" alt={"npcCar2"}/>
+                        <img className={npc3Class} ref={this.npcRef3} src="{npcCar}" alt={"npcCar3"}/>
                     </div>
                 </div>
             </div>
@@ -475,30 +543,3 @@ const npcAnimationHandler = (speed) => {
     return npcAnimation
 
 };
-
-// const npcRandomizerController = (animationHandler, speed) => {
-//     const baseDuration = 5.5;
-//     let speedModifier = 1;
-//     if (speed < 90) {
-//         speedModifier = speed / 10
-//     }
-//
-//     setTimeout(() => {
-//             while (true) {
-//                 let isRendering = Math.random() >= 0.5;
-//
-//                 if (isRendering) {
-//                     console.log("Rendere"isRendering);
-//                     return animationHandler;
-//                 }
-//
-//             }
-//
-//
-//         },
-//         baseDuration / speedModifier
-//     );
-//     return "";
-//
-//
-// }
