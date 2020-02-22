@@ -13,7 +13,6 @@ class HomePage extends Component  {
     }
 
 
-
     render() {
 
         let content = (

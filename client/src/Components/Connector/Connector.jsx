@@ -25,7 +25,10 @@ export default class Connector extends Component {
                 isClutchDown: false,
                 isAccelerating: false,
                 isBraking: false,
-                stalled: false
+                stalled: false,
+                showingNPCinLane1: false,
+                showingNPCinLane2: false,
+                showingNPCinLane3: false
             }
         };
     }
@@ -185,13 +188,11 @@ export default class Connector extends Component {
         let currentMessage = this.state.dataMessage;
         if (lane === 1) {
             currentMessage.showingNPCinLane1 = bool;
-
         } else if (lane === 2) {
             currentMessage.showingNPCinLane2 = bool;
         } else if (lane === 3) {
             currentMessage.showingNPCinLane3 = bool;
         }
-
         this.setState({dataMessage: currentMessage});
         return currentMessage;
     }
@@ -346,25 +347,15 @@ export class TestCarAndControls extends Component {
     }
 
     componentDidUpdate() {
-        let playerPosition = this.positionBindingHandler(this.playerRef.current);
-        let npc1Position = this.positionBindingHandler(this.npcRef1.current);
-        let npc2Position = this.positionBindingHandler(this.npcRef2.current);
-        let npc3Position = this.positionBindingHandler(this.npcRef3.current);
-
-        // console.log("previous state: ", prevState);
-
         if (!this.state.collision) {
             this.collisionController(
                 this.positionBindingHandler(this.playerRef.current),
                 this.positionBindingHandler(this.npcRef1.current),
                 this.positionBindingHandler(this.npcRef2.current),
-                this.positionBindingHandler(this.npcRef3.current));
+                this.positionBindingHandler(this.npcRef3.current)
+            );
         }
         console.log("collision: ", this.state.collision);
-        if(this.props.isAccelerating){
-            console.log("Should accelerate");
-            //this.props.accelerate();
-        }
     }
 
 
@@ -392,19 +383,25 @@ export class TestCarAndControls extends Component {
 
     npcSpawnHandler(lanePosition, speed) {
         let animationClass = "";
-        if (this.props.showingNPCinLane1) {
-            animationClass = `carImage-left-3 npcCarImage${npcAnimationHandler(speed)}`;
+        if (lanePosition === 1){
+            animationClass = "carImage-left-3 npcCarImage";
+            if (this.props.showingNPCinLane1) {
+                animationClass += npcAnimationHandler(speed);
+            }
         }
-
-        if (this.props.showingNPCinLane2) {
-            animationClass = `carImage-middle npcCarImage${npcAnimationHandler(speed)}`;
+        if (lanePosition === 2){
+            animationClass = "carImage-middle npcCarImage";
+            if (this.props.showingNPCinLane2) {
+                animationClass += npcAnimationHandler(speed);
+            }
         }
-
-        if (this.props.showingNPCinLane3) {
-            animationClass = `carImage-right-3 npcCarImage${npcAnimationHandler(speed)}`;
+        if (lanePosition === 3){
+            animationClass = "carImage-right-3 npcCarImage";
+            if (this.props.showingNPCinLane3) {
+                animationClass += npcAnimationHandler(speed);
+            }
         }
         return animationClass
-
     };
 
     collisionController(playerPosition, npc1Position, npc2Position, npc3Position) {
@@ -436,7 +433,6 @@ export class TestCarAndControls extends Component {
 
     }
 
-
     render() {
         let carImagePosition = this.props.carPosition;
         let speed = this.props.speed;
@@ -453,116 +449,88 @@ export class TestCarAndControls extends Component {
 
         return (
             <div>
-                <div>
-                    <div>
-                        <button onClick={() => {
-                            this.props.spawnNPC(true, 1);
-                            this.npcSpawnHandler(1, speed);
-                        }}>true 1
-                        </button>
-                        <button onClick={() => {
-                            this.props.spawnNPC(false, 1)
-                        }}>false 1
-                        </button>
-
+                <div className="Buttons">
+                    {this.props.showingNPCinLane1 ? null :
+                            <button onClick={() => {
+                                this.props.spawnNPC(true, 1);
+                                this.npcSpawnHandler(1, speed);
+                            }}>Spawn car in lane 1
+                            </button>
+                    }
+                    {this.props.showingNPCinLane2 ? null :
                         <button onClick={() => {
                             this.props.spawnNPC(true, 2);
                             this.npcSpawnHandler(2, speed);
-                        }}>true 2</button>
-                        <button onClick={() => this.props.spawnNPC(false, 2)}>false 2</button>
-
+                        }}>Spawn car in lane 2
+                        </button>
+                    }
+                    {this.props.showingNPCinLane3 ? null :
                         <button onClick={() => {
                             this.props.spawnNPC(true, 3);
                             this.npcSpawnHandler(3, speed);
-                        }}>true 3</button>
-                        <button onClick={() => this.props.spawnNPC(false, 3)}>false 3</button>
-                        <p>
-                            Speed ->{speed}
-                        </p>
-                        <p>
-                            Left/Right ->{horizontalPosition}
-                        </p>
-                        <p>
-                            Gear ->{gear}
-                        </p>
-                        <p>
-                            isAccelerating ->{isAccelerating.toString()}
-                        </p>
-                        <p>
-                            isBraking ->{isBraking.toString()}
-                        </p>
-                        <p>
-                            Clutch ->{clutch.toString()}
-                        </p>
-                        <p>
-                            Stalled ->{stalled.toString()}
-                        </p>
-                    </div>
-                    <div className="carDiv">
-                        <img className={carImagePosition} ref={this.playerRef} src={carImg} alt={"car"}/>
-                        <img className={npc1Class} ref={this.npcRef1} src="{npcCar}" alt={"npcCar1"}/>
-                        <img className={npc2Class} ref={this.npcRef2} src="{npcCar}" alt={"npcCar2"}/>
-                        <img className={npc3Class} ref={this.npcRef3} src="{npcCar}" alt={"npcCar3"}/>
+                        }}>Spawn car in lane 3
+                        </button>
+                    }
+                    <p>
+                        Speed ->{speed}
+                    </p>
+                    <p>
+                        Left/Right ->{horizontalPosition}
+                    </p>
+                    <p>
+                        Gear ->{gear}
+                    </p>
+                    <div>
+                        <p>isAccelerating ->{isAccelerating.toString()} </p>
+                        <p>isBraking ->{isBraking.toString()}</p>
+                        <p>Clutch ->{clutch.toString()} </p>
+                        <p>Stalled ->{stalled.toString()}</p>
                     </div>
                 </div>
-            </div>
 
+                <div className="carDiv">
+                    <img className={carImagePosition} ref={this.playerRef} src={carImg} alt={"car"}/>
+
+                    <img className={npc1Class} ref={this.npcRef1} src={npcCar} alt={"npcCar1"}/>
+                    <img className={npc2Class} ref={this.npcRef2} src={npcCar} alt={"npcCar2"}/>
+                    <img className={npc3Class} ref={this.npcRef3} src={npcCar} alt={"npcCar3"}/>
+                </div>
+            </div>
         );
     }
 }
 
 
-
-
-
 const npcAnimationHandler = (speed) => {
-
     let npcAnimation;
-
-
     switch (true) {
-
         case (speed <= 0):
             npcAnimation = "";
             break;
-
         case (1 < speed && speed < 19):
             npcAnimation = " npc-animation-speed-1";
             break;
         case (19 < speed && speed < 29):
-
             npcAnimation = " npc-animation-speed-2";
             break;
         case (29 < speed && speed < 39):
-
             npcAnimation = " npc-animation-speed-3";
             break;
         case (30 < speed && speed < 49):
-
             npcAnimation = " npc-animation-speed-4";
             break;
         case (49 < speed && speed < 59):
-
             npcAnimation = " npc-animation-speed-5";
             break;
         case (59 < speed && speed < 69):
-
             npcAnimation = " npc-animation-speed-6";
             break;
-
         case (69 < speed && speed < 79):
-
             npcAnimation = " npc-animation-speed-7";
             break;
-
         case (79 < speed):
-
             npcAnimation = " npc-animation-speed-7";
             break;
-
-
     }
-
     return npcAnimation
-
 };
