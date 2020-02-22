@@ -23,7 +23,8 @@ export default class Connector extends Component {
                 speed: 0,
                 currentGear: 0,
                 isClutchDown: false,
-                isShooting: false,
+                isAccelerating: false,
+                isBraking: false,
                 currentHealth: 100
             }
         };
@@ -51,27 +52,86 @@ export default class Connector extends Component {
         this.socket.json.emit('message', data);
     }
 
-    clutchPress() {
+    clutchDown(){
+        console.log("clutch pedal pressed");
         let currentMessage = this.state.dataMessage;
-        currentMessage.isClutchDown = !currentMessage.isClutchDown;
+        currentMessage.isClutchDown = true;
         this.setState({dataMessage: currentMessage});
         return currentMessage
     }
 
-    acceleratorPress() {
-        const accelerationSpeed = 10;
-        const maxSpeed = 100;
+    clutchUp(){
+        console.log("clutch pedal released");
+        let currentMessage = this.state.dataMessage;
+        currentMessage.isClutchDown = false;
+        this.setState({dataMessage: currentMessage});
+        return currentMessage
+    }
+
+    accelerateDown(){
+        console.log("Accelerate pedal pressed");
+        let currentMessage = this.state.dataMessage;
+        currentMessage.isAccelerating = true;
+        this.setState({dataMessage: currentMessage});
+        return currentMessage
+    }
+
+    accelerateUp() {
+        console.log("Accelerate pedal released");
+        let currentMessage = this.state.dataMessage;
+        currentMessage.isAccelerating = false;
+        this.setState({dataMessage: currentMessage});
+        return currentMessage
+    }
+
+
+    brakeDown(){
+        console.log("Break pedal pressed");
+        let currentMessage = this.state.dataMessage;
+        currentMessage.isBraking = true;
+        this.setState({dataMessage: currentMessage});
+        return currentMessage
+    }
+
+    brakeUp(){
+        console.log("Break pedal released");
+        let currentMessage = this.state.dataMessage;
+        currentMessage.isBraking = false;
+        this.setState({dataMessage: currentMessage});
+        return currentMessage
+    }
+
+    gearUp(bool) {
+        let currentMessage = this.state.dataMessage;
+        if(bool) {
+            if (currentMessage.currentGear < 5){
+                currentMessage.currentGear += 1;
+            }
+        } else {
+            if (currentMessage.currentGear > 0){
+                currentMessage.currentGear -= 1;
+            }
+        }
+        this.setState({dataMessage: currentMessage});
+        return currentMessage
+    }
+
+
+
+    accelerate() {
+        const accelerationSpeed = 5;
+        const maxSpeed = this.state.dataMessage.currentGear * 20;
+        console.log("max speed ->" + maxSpeed);
         let currentMessage = this.state.dataMessage;
         if (currentMessage.speed < maxSpeed) {
             currentMessage.speed += accelerationSpeed;
             this.setState({dataMessage: currentMessage});
         }
         return currentMessage
-
     }
 
-    breakPressed() {
-        const breakingSpeed = 10;
+    brake() {
+        const breakingSpeed = 3;
         const minSpeed = 0;
         let currentMessage = this.state.dataMessage;
         if (currentMessage.speed - breakingSpeed >= minSpeed) {
@@ -79,9 +139,7 @@ export default class Connector extends Component {
         } else {
             currentMessage.speed = minSpeed;
         }
-
         this.setState({dataMessage: currentMessage});
-
         return currentMessage
     }
 
@@ -106,13 +164,15 @@ export default class Connector extends Component {
     }
 
     render() {
-
         let speed = this.state.dataMessage.speed;
-        let clutch = this.state.dataMessage.isClutchDown;
+
         let horizontalPosition = this.state.dataMessage.horizontalPosition;
-
-
+        let gear = this.state.dataMessage.currentGear;
+        let isAccelerating = this.state.dataMessage.isAccelerating;
+        let isBraking = this.state.dataMessage.isBraking;
+        let clutch = this.state.dataMessage.isClutchDown;
         let carImagePosition;
+
         switch (this.state.dataMessage.horizontalPosition) {
             case 3:
                 carImagePosition = "carImage-right-3 playerCar";
@@ -139,17 +199,29 @@ export default class Connector extends Component {
         return (
             <div>
                 <div>
-                    <button onClick={() => this.submitData(this.acceleratorPress())}>
+                    <button
+                        onMouseDown={() => this.submitData(this.accelerateDown())}
+                        onMouseUp={() => this.submitData(this.accelerateUp())}
+                    >
                         accelerate
                     </button>
 
-                    <button onClick={() => this.submitData(this.breakPressed())}>
+                    <button
+                        onMouseDown={() => this.submitData(this.brakeDown())}
+                        onMouseUp={() => this.submitData(this.brakeUp())}
+                    >
                         brake
                     </button>
 
-                    <button onClick={() => this.submitData(this.clutchPress())}>
+                    <button
+                        onMouseDown={() => this.submitData(this.clutchDown())}
+                        onMouseUp={() => this.submitData(this.clutchUp())}
+                    >
                         clutch
                     </button>
+
+                    <button onClick={() => this.submitData(this.gearUp(true))}>Gear Up</button>
+                    <button onClick={() => this.submitData(this.gearUp(false))}>Gear Down</button>
 
                     <button onClick={() => this.submitData(this.turningLeft())}>
                         left
@@ -171,6 +243,11 @@ export default class Connector extends Component {
                         speed={speed}
                         clutch={clutch}
                         horizontalPosition={horizontalPosition}
+                        gear={gear}
+                        isAccelerating = {isAccelerating}
+                        accelerate = {this.accelerate.bind(this)}
+                        isBraking = {isBraking}
+                        brake = {this.brake.bind(this)}
                     />
                     {/*TODO: change these into css classes*/}
                     <div style={{"margin-left": "90%"}}>
@@ -182,6 +259,10 @@ export default class Connector extends Component {
         );
     }
 }
+
+
+/// Connector ends here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 
 export class TestCarAndControls extends Component {
@@ -205,9 +286,14 @@ export class TestCarAndControls extends Component {
         this.gameTimeInterval = setInterval(() => {
             this.setState(({gameTimer}) => ({
                 gameTimer: gameTimer + 1
-            }))
+            }));
+            if (this.props.isAccelerating){
+                this.props.accelerate();
+            }
+            if (this.props.isBraking){
+                this.props.brake();
+            }
         }, 300)
-
 
     }
 
@@ -227,7 +313,10 @@ export class TestCarAndControls extends Component {
                 this.positionBindingHandler(this.npcRef3.current));
         }
         console.log("collision: ", this.state.collision);
-
+        if(this.props.isAccelerating){
+            console.log("Should accelerate");
+            //this.props.accelerate();
+        }
     }
 
     componentWillUnmount() {
@@ -285,8 +374,11 @@ export class TestCarAndControls extends Component {
     render() {
         let carImagePosition = this.props.carPosition;
         let speed = this.props.speed;
-        let clutch = this.props.clutch;
         let horizontalPosition = this.props.horizontalPosition;
+        let gear = this.props.gear;
+        let isAccelerating = this.props.isAccelerating;
+        let isBraking = this.props.isBraking;
+        let clutch = this.props.clutch;
 
         let npc1Class = `carImage-left-3 npcCarImage${npcAnimationHandler(speed)}`;
         let npc2Class = `carImage-middle npcCarImage${npcAnimationHandler(speed)}`;
@@ -294,23 +386,27 @@ export class TestCarAndControls extends Component {
 
         return (
             <div>
-
                 <div>
-
                     <div>
                         <p>
                             Speed ->{speed}
                         </p>
                         <p>
-                            Clutch ->{clutch.toString()}
-                        </p>
-                        <p>
                             Left/Right ->{horizontalPosition}
                         </p>
-
+                        <p>
+                            Gear ->{gear}
+                        </p>
+                        <p>
+                            isAccelerating ->{isAccelerating.toString()}
+                        </p>
+                        <p>
+                            isBraking ->{isBraking.toString()}
+                        </p>
+                        <p>
+                            Clutch ->{clutch.toString()}
+                        </p>
                     </div>
-
-
                     <div className="carDiv">
                         <img className={carImagePosition} ref={this.playerRef} src={carImg} alt={"car"}/>
                         <img className={npc1Class} ref={this.npcRef1} src={npcCar} alt={"npcCar1"}/>
@@ -323,6 +419,10 @@ export class TestCarAndControls extends Component {
         );
     }
 }
+
+
+
+
 
 const npcAnimationHandler = (speed) => {
 
