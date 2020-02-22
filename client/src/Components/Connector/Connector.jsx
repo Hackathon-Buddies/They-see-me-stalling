@@ -25,17 +25,13 @@ export default class Connector extends Component {
                 isClutchDown: false,
                 isAccelerating: false,
                 isBraking: false,
-                currentHealth: 100,
-                showingNPCinLane1: false,
-                showingNPCinLane2: false,
-                showingNPCinLane3: false,
-
+                stalled: false
             }
         };
     }
 
     componentDidMount() {
-        let uri = "http://10.77.86.173:" + port; // TODO: should be changed to IPv4 during demo.
+        let uri = "http://localhost:" + port; // TODO: should be changed to IPv4 during demo.
         this.socket = io.connect(uri, {
             reconnectionDelay: 1000,
             reconnection: true,
@@ -67,6 +63,14 @@ export default class Connector extends Component {
     clutchUp(){
         console.log("clutch pedal released");
         let currentMessage = this.state.dataMessage;
+        if(currentMessage.stalled === true) {
+            const minSpeed = (currentMessage.currentGear - 1) * 20;
+            const maxSpeed = currentMessage.currentGear * 20;
+            const currentSpeed = currentMessage.speed;
+            if (currentSpeed <= maxSpeed && currentSpeed >= minSpeed){
+                currentMessage.stalled = false;
+            }
+        }
         currentMessage.isClutchDown = false;
         this.setState({dataMessage: currentMessage});
         return currentMessage
@@ -107,16 +111,21 @@ export default class Connector extends Component {
 
     gearUp(bool) {
         let currentMessage = this.state.dataMessage;
-        if(bool) {
-            if (currentMessage.currentGear < 5){
-                currentMessage.currentGear += 1;
+        if (currentMessage.isClutchDown){
+            if(bool) {
+                if (currentMessage.currentGear < 5){
+                    currentMessage.currentGear += 1;
+                    if(currentMessage.speed + 30 < currentMessage.currentGear * 20) {
+                        currentMessage.stalled = true;
+                    }
+                }
+            } else {
+                if (currentMessage.currentGear > 0){
+                    currentMessage.currentGear -= 1;
+                }
             }
-        } else {
-            if (currentMessage.currentGear > 0){
-                currentMessage.currentGear -= 1;
-            }
+            this.setState({dataMessage: currentMessage});
         }
-        this.setState({dataMessage: currentMessage});
         return currentMessage
     }
 
@@ -127,7 +136,7 @@ export default class Connector extends Component {
         const maxSpeed = this.state.dataMessage.currentGear * 20;
         console.log("max speed ->" + maxSpeed);
         let currentMessage = this.state.dataMessage;
-        if (currentMessage.speed < maxSpeed) {
+        if (currentMessage.speed < maxSpeed && currentMessage.stalled !== true) {
             currentMessage.speed += accelerationSpeed;
             this.setState({dataMessage: currentMessage});
         }
@@ -137,7 +146,12 @@ export default class Connector extends Component {
     brake() {
         const breakingSpeed = 3;
         const minSpeed = 0;
+        const stallSpeed = (this.state.dataMessage.currentGear - 1) * 20;
         let currentMessage = this.state.dataMessage;
+        if (currentMessage.speed < stallSpeed && !currentMessage.isClutchDown){
+            console.log("You stalled mofo!!!");
+            currentMessage.stalled = true;
+        }
         if (currentMessage.speed - breakingSpeed >= minSpeed) {
             currentMessage.speed -= breakingSpeed;
         } else {
@@ -190,6 +204,7 @@ export default class Connector extends Component {
         let isAccelerating = this.state.dataMessage.isAccelerating;
         let isBraking = this.state.dataMessage.isBraking;
         let clutch = this.state.dataMessage.isClutchDown;
+        let stalled = this.state.dataMessage.stalled;
         let carImagePosition;
 
         switch (this.state.dataMessage.horizontalPosition) {
@@ -273,6 +288,7 @@ export default class Connector extends Component {
                         accelerate = {this.accelerate.bind(this)}
                         isBraking = {isBraking}
                         brake = {this.brake.bind(this)}
+                        stalled = {stalled}
                         showingNPCinLane1={this.state.dataMessage.showingNPCinLane1}
                         showingNPCinLane2={this.state.dataMessage.showingNPCinLane2}
                         showingNPCinLane3={this.state.dataMessage.showingNPCinLane3}
@@ -320,6 +336,9 @@ export class TestCarAndControls extends Component {
                 this.props.accelerate();
             }
             if (this.props.isBraking){
+                this.props.brake();
+            }
+            if (this.props.stalled){
                 this.props.brake();
             }
         }, 300)
@@ -426,6 +445,7 @@ export class TestCarAndControls extends Component {
         let isAccelerating = this.props.isAccelerating;
         let isBraking = this.props.isBraking;
         let clutch = this.props.clutch;
+        let stalled = this.props.stalled;
 
         let npc1Class = this.npcSpawnHandler(1, speed);
         let npc2Class = this.npcSpawnHandler(2, speed);
@@ -473,6 +493,9 @@ export class TestCarAndControls extends Component {
                         </p>
                         <p>
                             Clutch ->{clutch.toString()}
+                        </p>
+                        <p>
+                            Stalled ->{stalled.toString()}
                         </p>
                     </div>
                     <div className="carDiv">
