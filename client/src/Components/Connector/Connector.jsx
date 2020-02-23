@@ -149,7 +149,7 @@ export default class Connector extends Component {
 
 
     accelerate() {
-        const accelerationSpeed = 2;
+        const accelerationSpeed = 1;
         const maxSpeed = this.state.dataMessage.currentGear * 20;
         console.log("max speed ->" + maxSpeed);
         let currentMessage = this.state.dataMessage;
@@ -163,7 +163,7 @@ export default class Connector extends Component {
     }
 
     brake() {
-        const breakingSpeed = 1;
+        const breakingSpeed = 0.5;
         const minSpeed = 0;
         const stallSpeed = (this.state.dataMessage.currentGear - 1) * 20;
         let currentMessage = this.state.dataMessage;
@@ -376,19 +376,21 @@ export class TestCarAndControls extends Component {
             if (this.props.stalled){
                 this.props.brake();
             }
-        }, 300)
+        }, 100)
 
     }
 
     componentDidUpdate() {
         if(this.props.showingNPCinLane1 || this.props.showingNPCinLane2 || this.props.showingNPCinLane3){
-            this.collisionController(
-                this.positionBindingHandler(this.playerRef.current),
-                this.positionBindingHandler(this.npcRef1.current),
-                this.positionBindingHandler(this.npcRef2.current),
-                this.positionBindingHandler(this.npcRef3.current)
-            );
-            console.log("collision: ", this.state.collision);
+            if(!this.state.collision && this.props.speed !== 0){
+                this.collisionController(
+                    this.positionBindingHandler(this.playerRef.current),
+                    this.positionBindingHandler(this.npcRef1.current),
+                    this.positionBindingHandler(this.npcRef2.current),
+                    this.positionBindingHandler(this.npcRef3.current)
+                );
+                console.log("collision: ", this.state.collision);
+            }
         }
     }
 
@@ -404,25 +406,28 @@ export class TestCarAndControls extends Component {
     collisionController(playerPosition, npc1Position, npc2Position, npc3Position) {
         if(this.props.showingNPCinLane1){
             if (this.collisionHandler(playerPosition, npc1Position,1)) {
-                this.setState({collision: true});
+                //this.setState({collision: true});
+                this.props.spawnNPC(false,1);
                 console.log("collision detected at lane 1")
             }
         }
         if(this.props.showingNPCinLane2){
             if (this.collisionHandler(playerPosition, npc2Position,2)) {
-                this.setState({collision: true});
+                //this.setState({collision: true});
+                this.props.spawnNPC(false,2);
                 console.log("collision detected lane 2")
             }
         }
         if(this.props.showingNPCinLane3){
             if (this.collisionHandler(playerPosition, npc3Position,3)) {
-                this.setState({collision: true});
+                //this.setState({collision: true});
+                this.props.spawnNPC(false,3);
                 console.log("collision detected lane 3")
             }
         }
     }
 
-    collisionHandler(playerPosition, npcPosition,lane) {
+    collisionHandler(playerPosition, npcPosition, lane) {
         const positionVariant = 90; // A relative value for error because detection may not be pixel perfect.
         const playerX = playerPosition.x + playerPosition.height/2;
         const playerY = playerPosition.y + playerPosition.width/2;
@@ -503,30 +508,38 @@ export class TestCarAndControls extends Component {
             }
         }
 
+        const anyLaneShowing = false;
+            //this.props.showingNPCinLane1 ||
+            //this.props.showingNPCinLane2 ||
+            //this.props.showingNPCinLane3;
+
         return (
             <div>
-                <div className="Buttons">
-                    {this.props.showingNPCinLane1 ? null :
+                {anyLaneShowing ? null :
+                    <div className="Buttons">
+                        {this.props.showingNPCinLane1 ? null :
                             <button onClick={() => {
                                 this.props.spawnNPC(true, 1);
                                 this.npcSpawnHandler(1, speed);
                             }}>Spawn car in lane 1
                             </button>
-                    }
-                    {this.props.showingNPCinLane2 ? null :
-                        <button onClick={() => {
-                            this.props.spawnNPC(true, 2);
-                            this.npcSpawnHandler(2, speed);
-                        }}>Spawn car in lane 2
-                        </button>
-                    }
-                    {this.props.showingNPCinLane3 ? null :
-                        <button onClick={() => {
-                            this.props.spawnNPC(true, 3);
-                            this.npcSpawnHandler(3, speed);
-                        }}>Spawn car in lane 3
-                        </button>
-                    }
+                        }
+                        {this.props.showingNPCinLane2 ? null :
+                            <button onClick={() => {
+                                this.props.spawnNPC(true, 2);
+                                this.npcSpawnHandler(2, speed);
+                            }}>Spawn car in lane 2
+                            </button>
+                        }
+                        {this.props.showingNPCinLane3 ? null :
+                            <button onClick={() => {
+                                this.props.spawnNPC(true, 3);
+                                this.npcSpawnHandler(3, speed);
+                            }}>Spawn car in lane 3
+                            </button>
+                        }
+                    </div>
+                }
                     <p>
                         Speed ->{speed}
                     </p>
@@ -542,7 +555,7 @@ export class TestCarAndControls extends Component {
                         <p>Clutch ->{clutch.toString()} </p>
                         <p>Stalled ->{stalled.toString()}</p>
                     </div>
-                </div>
+
 
                 <div className="carDiv">
                     <img className={carImagePosition} ref={this.playerRef} src={carImage} alt={"car"}/>
