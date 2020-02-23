@@ -1,61 +1,151 @@
+.Speedometer {
+    font-family: "Arial Black";
+    font-size: 35px;
+    z-index:2;
+    position: absolute;
+    top: 9.5%;
+    right: 44.5%
+}
+
+.ControlButton1, .ControlButton2, .ControlButton3, .ControlButton4, .ControlButton5, .ControlButton6, .ControlButton7{
+    z-index: 2;
+    position: absolute;
+    left: 24%;
+}
+/*right button*/
+.ControlButton1{
+    margin-left: 52.5%;
+    margin-top: 1.5%;
+    height: 50px;
+    width: 50px;
+}
+
+.ControlButton2{
+    margin-top: 7.5%;
+    left: 18%;
+}
+
+.ControlButton3{
+    margin-left: 17%;
+    margin-top: 7.5%;
+}
+
+.ControlButton4{
+    margin-left: 42%;
+    margin-top: 7.5%;
+}
+/*Gear up*/
+.ControlButton5{
+    left: 19%;
+    top: 3%;
+    height: 50px;
+    width: 50px;
+}
+
+/*Gear down*/
+.ControlButton6{
+    left: 27.5%;
+    top: 3%;
+    height: 50px;
+    width: 50px;
+}
+/*left button*/
+.ControlButton7{
+    margin-left: 42.5%;
+    margin-top: 1.5%;
+    height: 50px;
+    width: 50px;
+}
+
+
+.ControlImage1, .ControlImage2, .ControlImage3, .ControlImage4, .ControlImage5{
+    z-index: 2;
+    height: 100px;
+    width: 100px;
+    position: absolute;
+    left: 25%;
+}
+
+.ControlImage1{
+    left: 22%;
+}
+.ControlImage2{
+    margin-left: 13%;
+}
+.ControlImage3{
+    margin-left: 20%;
+}
+.ControlImage4{
+    margin-left: 28%;
+}
+.ControlImage5{
+    margin-left: 45%;
+}
+
+
+
 .carImage-left-3 {
     height: 300px;
     width: 200px;
     position: absolute;
-    right: 56%;
+    left: 20%;
 }
 
 .carImage-left-2 {
     height: 300px;
     width: 200px;
     position: absolute;
-    right: 53%;
+    left: 30%;
 }
 
 .carImage-left-1 {
     height: 300px;
     width: 200px;
     position: absolute;
-    right: 50%;
+    left: 35%;
+}
+
+.carImage-middle {
+    left: 43%;
+    height: 300px;
+    width: 200px;
+    position: absolute;
 }
 
 .carImage-right-3 {
     height: 300px;
     width: 200px;
     position: absolute;
-    left: 56%;
+    left: 65%;
 }
 
 .carImage-right-2 {
     height: 300px;
     width: 200px;
     position: absolute;
-    left: 53%;
+    left: 55%;
 }
 
 .carImage-right-1 {
     height: 300px;
     width: 200px;
     position: absolute;
-    left: 51%;
+    left: 50%;
 }
 
-.carImage-middle {
-    height: 300px;
-    width: 200px;
-    position: absolute;
-    left: 49%;
-}
+
 
 .playerCar {
-    z-index:6;
-    bottom: 35%;
+    z-index:1;
+    bottom: 2%;
 }
 
 .npcCarImage {
     top: -50%;
     position: absolute;
     z-index:1;
+    height: 300px;
+    width: 200px;
 }
 
 
@@ -64,7 +154,6 @@
     justify-content: center;
 
 }
-
 
 
 .npc-animation-speed-1 {
