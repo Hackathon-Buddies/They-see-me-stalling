@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './HomePage.css';
 import Connector from "../Connector/Connector"
+import SelectionPage from "../SelectionPage/SelectionPage";
 
 class HomePage extends Component  {
 
@@ -19,6 +20,7 @@ class HomePage extends Component  {
         let content = (
 
             <div className="background">
+                
                 <button className="HomeButton"
                         onClick={() => this.handleClick()}>
                     Click to Start
@@ -28,7 +30,7 @@ class HomePage extends Component  {
 
         if(!this.state.isMenuShowing){
             content = (
-             <Connector/>
+             <SelectionPage/>
             );
         }
         document.body.style.backgroundColor = "#000F42";

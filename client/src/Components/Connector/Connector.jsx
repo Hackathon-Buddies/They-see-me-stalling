@@ -30,7 +30,7 @@ export default class Connector extends Component {
     }
 
     componentDidMount() {
-        let uri = "http://10.77.86.173:" + port; // TODO: should be changed to IPv4 during demo.
+        let uri = "http://10.77.94.144:" + port; // TODO: should be changed to IPv4 during demo.
         this.socket = io.connect(uri, {
             reconnectionDelay: 1000,
             reconnection: true,
