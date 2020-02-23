@@ -5,7 +5,7 @@
     border-style: solid;
     position: absolute;
     color: white;
-    height: 20%;
+    height: 30%;
     right: 0 ;
     bottom:0;
     left: 0;
@@ -13,7 +13,9 @@
 
 
 .IntroText{
-    font-size: 250%;
+    margin-top: 30px;
+    font-family: "Press Start 2P";
+    font-size: 200%;
 }
 
 
@@ -32,8 +34,8 @@
 
 
 .floated1 {
-    font-family: "Brush Script MT";
-    border: 2px solid #4CAF50;
+    font-family: "Press Start 2P";
+    border: 0px solid #4CAF50;
     background-color: black;
     position: absolute;
     margin-right: 5px;
@@ -46,8 +48,8 @@
 
 
 .floated2 {
-    font-family: "Brush Script MT";
-    border: 2px solid #4CAF50;
+    font-family: "Press Start 2P";
+    border: 0px solid #ffff00;
     background-color: black;
     position: absolute;
     margin-right: 5px;

@@ -282,7 +282,7 @@ export default class Connector extends Component {
                 </div>
 
 
-                <div className="row">
+                <div className="rowApp">
                     {/*TODO: change these into css classes*/}
                     <div style={{"marginRight": "90%"}}>
                         <LeftRoadSide speed={speed}/>

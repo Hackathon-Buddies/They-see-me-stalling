@@ -1,3 +1,5 @@
+@import url(https://fonts.googleapis.com/css?family=Press+Start+2P&disp);
+
 .background {
     height:650px;
     max-height: 100%;
@@ -5,15 +7,15 @@
     align-content: center;
     flex: auto;
     background: url("../../assets/home2.gif") no-repeat;
-    background-size: contain;
+    background-size: cover;
     justify-content: center;
 }
 
 
-.HomeButton{
+.HomeButton1{
     bottom: 15%;
     color: white;
-    font-family: "Brush Script MT";
+    font-family: "Press Start 2P";
     font-size: 350%;
     position: absolute;
     background-color: #000F42;
@@ -26,11 +28,11 @@
 .wrapper{
     text-align: center;
 }
-.HomeButton:hover  {
+.HomeButton1:hover  {
     animation: text-flicker 2s linear forwards;
 }
 
-.HomeButton:hover .first {
+.HomeButton1:hover .first {
     animation: letter-flicker 3s linear infinite;
 }
 

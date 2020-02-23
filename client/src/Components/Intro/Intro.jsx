@@ -3,8 +3,8 @@ import PeterGif from "../../assets/IntroAssets/Peter.gif";
 import AndreiGif from "../../assets/IntroAssets/Andrei.gif"
 import FemiGif from "../../assets/IntroAssets/Femi.gif"
 import TomasGif from "../../assets/IntroAssets/Tomas.gif"
-import Connector from "../Connector/Connector"
 import './Intro.css'
+import SelectionPage from "../SelectionPage/SelectionPage";
 
 export default class SoundComponent extends Component {
     state={
@@ -54,7 +54,7 @@ export default class SoundComponent extends Component {
 
         if (this.state.currentScript === maxLength){
             content = (
-                <Connector/>
+                <SelectionPage/>
             );
         }
         return (

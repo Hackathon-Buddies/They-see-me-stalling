@@ -33,7 +33,7 @@ class HomePage extends Component  {
         let content = (
 
             <div className="background">
-                <button className="HomeButton"
+                <button className="HomeButton1"
                         onClick={() => this.handleClick()}>
                     Click to Start
                 </button>

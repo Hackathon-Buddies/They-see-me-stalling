@@ -9,7 +9,7 @@
   left: -30%;
 }
 
-.row{display:flex; flex-direction:row; text-align: center; justify-content: center; max-width: 100%}
+.rowApp{display:flex; flex-direction:row; text-align: center; justify-content: center; max-width: 100%}
 
 .App-logo {
   height: 40vmin;

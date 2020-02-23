@@ -56,7 +56,7 @@ class SelectionPage extends Component  {
                 {/*</x-sign>*/}
                 <div>
                     {/*<h1 className = "victory"> <span className = "victory-v" > C </span> Car chase </h1>*/}
-                    <h1 className = "victory-title">  Car chase </h1>
+                    <h1 className = "victory">  Car chase </h1>
                 </div>
                 <br>
                 </br>
