@@ -10,6 +10,12 @@ io.on("connection", socket => {
         console.log("We got: ",msg);
         io.emit("message", msg);
     });
+
+    socket.on("roleSelectorMessage", msg => {
+        console.log("role be like...", msg);
+        io.emit("roleSelectorMessage", msg)
+    })
+
 });
 
 server.listen(port, () => console.log("server running on port:" + port));

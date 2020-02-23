@@ -2,49 +2,49 @@
     height: 300px;
     width: 200px;
     position: absolute;
-    right: 56%;
+    left: 30%;
 }
 
 .carImage-left-2 {
     height: 300px;
     width: 200px;
     position: absolute;
-    right: 53%;
+    left: 35%;
 }
 
 .carImage-left-1 {
     height: 300px;
     width: 200px;
     position: absolute;
-    right: 50%;
+    left: 40%;
 }
 
 .carImage-right-3 {
     height: 300px;
     width: 200px;
     position: absolute;
-    left: 56%;
+    left: 60%;
 }
 
 .carImage-right-2 {
     height: 300px;
     width: 200px;
     position: absolute;
-    left: 53%;
+    left: 55%;
 }
 
 .carImage-right-1 {
     height: 300px;
     width: 200px;
     position: absolute;
-    left: 51%;
+    left: 50%;
 }
 
 .carImage-middle {
+    left: 45%;
     height: 300px;
     width: 200px;
     position: absolute;
-    left: 49%;
 }
 
 .playerCar {

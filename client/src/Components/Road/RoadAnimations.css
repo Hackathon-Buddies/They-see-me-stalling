@@ -2,12 +2,16 @@
     display: flex;
     flex-direction: column;
     margin-right: 20%;
+    left: 10%;
+    position: absolute;
 }
 
 .rightSideColumn {
     display: flex;
     flex-direction: column;
     margin-left: 20%;
+    right: 10%;
+    position: absolute;
 }
 
 .sideImg {

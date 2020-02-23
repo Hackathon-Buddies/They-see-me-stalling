@@ -41,8 +41,8 @@ export default class SoundComponent extends Component {
 
 
                     <div className="IntroButton">
-                        <button class="floated1" onClick={() => this.changeScript()}>Next</button>
-                        <button class="floated2" onClick={() => this.skipClick()}> Skip</button>
+                        <button className="floated1" onClick={() => this.changeScript()}>Next</button>
+                        <button className="floated2" onClick={() => this.skipClick()}> Skip</button>
                     </div>
 
                 </div>
