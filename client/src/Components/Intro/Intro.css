@@ -1,0 +1,59 @@
+.cutscenenText{
+    background-color: black;
+    align-content: center;
+    justify-items: center;
+    border-style: solid;
+    position: absolute;
+    color: white;
+    height: 20%;
+    right: 0 ;
+    bottom:0;
+    left: 0;
+}
+
+
+.IntroText{
+    font-size: 250%;
+}
+
+
+.cutsceneGif{
+
+    float: right;
+    padding: 0 20px 20px 0;
+
+}
+
+.IntroButton{
+    position: absolute;
+    width: 100%;
+    bottom:0;
+}
+
+
+.floated1 {
+    font-family: "Brush Script MT";
+    border: 2px solid #4CAF50;
+    background-color: black;
+    position: absolute;
+    margin-right: 5px;
+    font-size: 350%;
+    color: green;
+    right: 0px;
+    float: left;
+    bottom:0;
+}
+
+
+.floated2 {
+    font-family: "Brush Script MT";
+    border: 2px solid #4CAF50;
+    background-color: black;
+    position: absolute;
+    margin-right: 5px;
+    font-size: 350%;
+    color: yellow;
+    left: 0px;
+    bottom:0;
+}
+
