@@ -28,7 +28,7 @@ class SelectionPage extends Component {
     }
 
     componentDidMount() {
-        let uri = "http://10.77.86.173:" + 5000; // TODO: should be changed to IPv4 during demo.
+        let uri = "http://10.77.94.144:" + 5000; // TODO: should be changed to IPv4 during demo.
         this.socket = io.connect(uri, {
             reconnectionDelay: 1000,
             reconnection: true,
@@ -116,7 +116,7 @@ class SelectionPage extends Component {
                 {/*</x-sign>*/}
                 <div>
                     {/*<h1 className = "victory"> <span className = "victory-v" > C </span> Car chase </h1>*/}
-                    <h1 className="victory"> Car chase </h1>
+                    <h1 className="victory"> They see me stallin </h1>
                 </div>
                 <br>
                 </br>
@@ -162,7 +162,7 @@ class SelectionPage extends Component {
 
         if (!this.state.isMenuShowing) {
             content = (
-                <Connector/>
+                <Connector role={this.state.role}/>
             );
         }
 

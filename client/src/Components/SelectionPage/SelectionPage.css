@@ -355,6 +355,7 @@ a{
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0;
+    margin-top: 10%;
     -webkit-filter: drop-shadow(2px 2px 20px #f008b7);
 }
 

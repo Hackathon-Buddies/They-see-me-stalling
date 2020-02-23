@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import io from 'socket.io-client';
-import npcCar from "../../assets/npc-car.png"
 import "./Connector.css"
 import '../../App.css';
 import "../Road/RoadAnimations.css"
@@ -34,9 +33,13 @@ import obstacle1 from "../../assets/obstacles/obstacle-1.png"
 import obstacle2 from "../../assets/obstacles/obstacle-2.png"
 import obstacle3 from "../../assets/obstacles/obstacle-3.png"
 import obstacle4 from "../../assets/obstacles/obstacle-4.png"
-
-
-
+import lane_closed from "../../assets/controls/laneClosed.jpeg"
+import down_arrow from "../../assets/controls/down_arrow.png"
+import up_arrow from "../../assets/controls/up_arrow.png"
+import blue_left from "../../assets/controls/blue_left.png"
+import blue_right from "../../assets/controls/blue_right.png"
+import red_left from "../../assets/controls/red_left.png"
+import red_right from "../../assets/controls/red_right.png"
 
 
 
@@ -300,12 +303,16 @@ export default class Connector extends Component {
         }
 
         let wheelImg = wheel_neutral;
+        let rightSignalImg = blue_right;
+        let leftSignalImg = blue_left;
 
         if(turningLeft){
             wheelImg = wheel_left;
+            leftSignalImg = red_left;
         }
         if(turningRight){
             wheelImg = wheel_right;
+            rightSignalImg = red_right;
         }
 
         if (isAccelerating){
@@ -342,63 +349,69 @@ export default class Connector extends Component {
             default:
                 carImagePosition = "carImage-middle playerCar";
         }
+
+
         document.body.style.backgroundColor = "white";
         return (
             <div>
                 <div className="Controls">
-                    <button className="ControlButton5" onClick={() => this.submitData(this.gearUp(true))}>Gear Up</button>
+                    <img
+                        className="ControlButton5"
+                        src={down_arrow}
+                        alt="gearUpPic"
+                        onClick={() => this.submitData(this.gearUp(true))}
+                    />
                     <img
                         className="ControlImage1"
                         src={gearImg}
                         alt="gearPic"
-                    >
-                    </img>
-                    <button className="ControlButton6" onClick={() => this.submitData(this.gearUp(false))}>Gear Down</button>
+                    />
+                    <img
+                        className="ControlButton6"
+                        src={up_arrow}
+                        alt="gearDownPic"
+                        onClick={() => this.submitData(this.gearUp(false))}
+                    />
                     <img
                         className="ControlImage2"
                         src={clutchImg}
                         alt="clutchPic"
                         onMouseDown={() => this.submitData(this.clutchDown())}
                         onMouseUp={() => this.submitData(this.clutchUp())}
-                    >
-                    </img>
+                    />
                     <img
                         className="ControlImage3"
                         src={brakeImg}
                         alt="brakePic"
                         onMouseDown={() => this.submitData(this.brakeDown())}
                         onMouseUp={() => this.submitData(this.brakeUp())}
-                    >
-                    </img>
+                    />
                     <img
                         className="ControlImage4"
                         src={accelerationImg}
                         alt="accelerationPic"
                         onMouseDown={() => this.submitData(this.accelerateDown())}
                         onMouseUp={() => this.submitData(this.accelerateUp())}
-                    >
-                    </img>
-                    <button
+                    />
+                    <img
                         className="ControlButton7"
+                        src={leftSignalImg}
+                        alt="LeftPic"
                         onMouseDown={() => this.submitData(this.turningLeft(true))}
                         onMouseUp={() => this.submitData(this.turningLeft(false))}
-                    >
-                        Left
-                    </button>
-
+                    />
                     <img
                         className="ControlImage5"
                         src={wheelImg}
                         alt="wheelPic"
-                    >
-                    </img>
-                    <button
+                    />
+                    <img
                         className="ControlButton1"
+                        src={rightSignalImg}
+                        alt="RightPic"
                         onMouseDown={() => this.submitData(this.turningRight(true))}
                         onMouseUp={() => this.submitData(this.turningRight(false))}
-                    >
-                        Right
-                    </button>
+                    />
                 </div>
 
 
@@ -626,28 +639,37 @@ export class TestCarAndControls extends Component {
             <div>
                 <div className="SpawningButtons Controls">
                     {this.props.showingNPCinLane1 ? null :
-                        <button className="ControlButton2" onClick={() => {
-                            this.props.spawnNPC(true, 1);
-                            this.npcSpawnHandler(1, speed);
-                        }}>Spawn car in lane 1
-                        </button>
+                        <img
+                            className="ControlButton2"
+                            src={lane_closed}
+                            onClick={() => {
+                                this.props.spawnNPC(true, 1);
+                                this.npcSpawnHandler(1, speed);}
+                            }
+                        />
                     }
                     {this.props.showingNPCinLane2 ? null :
-                        <button className="ControlButton3" onClick={() => {
-                            this.props.spawnNPC(true, 2);
-                            this.npcSpawnHandler(2, speed);
-                        }}>Spawn car in lane 2
-                        </button>
+                        <img
+                            className="ControlButton3"
+                            src={lane_closed}
+                            onClick={() => {
+                                this.props.spawnNPC(true, 2);
+                                this.npcSpawnHandler(2, speed);}
+                            }
+                        />
                     }
                     {this.props.showingNPCinLane3 ? null :
-                        <button className="ControlButton4" onClick={() => {
-                            this.props.spawnNPC(true, 3);
-                            this.npcSpawnHandler(3, speed);
-                        }}>Spawn car in lane 3
-                        </button>
+                        <img
+                            className="ControlButton4"
+                            src={lane_closed}
+                            onClick={() => {
+                                this.props.spawnNPC(true, 3);
+                                this.npcSpawnHandler(3, speed);}
+                            }
+                        />
                     }
-                    <p>
-                        Speed ->{speed}
+                    <p className ="Speedometer">
+                        Current Speed:{speed}
                     </p>
                 </div>
                 <div className="carDiv">

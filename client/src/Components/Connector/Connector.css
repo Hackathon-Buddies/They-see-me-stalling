@@ -1,3 +1,12 @@
+.Speedometer {
+    font-family: "Arial Black";
+    font-size: 35px;
+    z-index:2;
+    position: absolute;
+    top: 9.5%;
+    right: 44.5%
+}
+
 .ControlButton1, .ControlButton2, .ControlButton3, .ControlButton4, .ControlButton5, .ControlButton6, .ControlButton7{
     z-index: 2;
     position: absolute;
@@ -5,38 +14,47 @@
 }
 /*right button*/
 .ControlButton1{
-    margin-left: 36.5%;
+    margin-left: 52.5%;
     margin-top: 1.5%;
+    height: 50px;
+    width: 50px;
 }
 
 .ControlButton2{
     margin-top: 7.5%;
+    left: 18%;
 }
 
 .ControlButton3{
-    margin-left: 20%;
+    margin-left: 17%;
     margin-top: 7.5%;
 }
 
 .ControlButton4{
-    margin-left: 40%;
+    margin-left: 42%;
     margin-top: 7.5%;
 }
 /*Gear up*/
 .ControlButton5{
-    left: 15%;
-    top: 5%;
+    left: 19%;
+    top: 3%;
+    height: 50px;
+    width: 50px;
 }
 
 /*Gear down*/
 .ControlButton6{
-    left: 26.5%;
-    top: 5%;
+    left: 27.5%;
+    top: 3%;
+    height: 50px;
+    width: 50px;
 }
 /*left button*/
 .ControlButton7{
-    margin-left: 28.5%;
+    margin-left: 42.5%;
     margin-top: 1.5%;
+    height: 50px;
+    width: 50px;
 }
 
 
@@ -49,19 +67,19 @@
 }
 
 .ControlImage1{
-    left: 20%;
+    left: 22%;
 }
 .ControlImage2{
-    margin-left: 7%;
+    margin-left: 13%;
 }
 .ControlImage3{
-    margin-left: 14%;
+    margin-left: 20%;
 }
 .ControlImage4{
-    margin-left: 21%;
+    margin-left: 28%;
 }
 .ControlImage5{
-    margin-left: 30%;
+    margin-left: 45%;
 }
 
 
