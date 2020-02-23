@@ -14,6 +14,7 @@ import player_speed_4 from "../../assets/carGifs/movement/player-speed-4.gif"
 import player_speed_5 from "../../assets/carGifs/movement/player-speed-5.gif"
 import player_stall from "../../assets/carGifs/stall/player-stall.gif"
 import player_stall_idle from "../../assets/carGifs/stall/player-stall-idle.gif"
+import {RoadStripLeft, RoadStripRight} from "../RoadStrip/RoadStrip";
 
 
 const port = 5000; // Server port. TODO: import form server.js once they are under the same src
@@ -62,7 +63,7 @@ export default class Connector extends Component {
         this.socket.json.emit('message', data);
     }
 
-    clutchDown(){
+    clutchDown() {
         console.log("clutch pedal pressed");
         let currentMessage = this.state.dataMessage;
         currentMessage.isClutchDown = true;
@@ -70,14 +71,14 @@ export default class Connector extends Component {
         return currentMessage
     }
 
-    clutchUp(){
+    clutchUp() {
         console.log("clutch pedal released");
         let currentMessage = this.state.dataMessage;
-        if(currentMessage.stalled === true) {
+        if (currentMessage.stalled === true) {
             const minSpeed = (currentMessage.currentGear - 1) * 20;
             const maxSpeed = currentMessage.currentGear * 20;
             const currentSpeed = currentMessage.speed;
-            if (currentSpeed <= maxSpeed && currentSpeed >= minSpeed){
+            if (currentSpeed <= maxSpeed && currentSpeed >= minSpeed) {
                 currentMessage.stalled = false;
             }
         }
@@ -86,7 +87,7 @@ export default class Connector extends Component {
         return currentMessage
     }
 
-    accelerateDown(){
+    accelerateDown() {
         console.log("Accelerate pedal pressed");
         let currentMessage = this.state.dataMessage;
         currentMessage.isAccelerating = true;
@@ -103,7 +104,7 @@ export default class Connector extends Component {
     }
 
 
-    brakeDown(){
+    brakeDown() {
         console.log("Break pedal pressed");
         let currentMessage = this.state.dataMessage;
         currentMessage.isBraking = true;
@@ -111,7 +112,7 @@ export default class Connector extends Component {
         return currentMessage
     }
 
-    brakeUp(){
+    brakeUp() {
         console.log("Break pedal released");
         let currentMessage = this.state.dataMessage;
         currentMessage.isBraking = false;
@@ -121,16 +122,16 @@ export default class Connector extends Component {
 
     gearUp(bool) {
         let currentMessage = this.state.dataMessage;
-        if (currentMessage.isClutchDown){
-            if(bool) {
-                if (currentMessage.currentGear < 5){
+        if (currentMessage.isClutchDown) {
+            if (bool) {
+                if (currentMessage.currentGear < 5) {
                     currentMessage.currentGear += 1;
-                    if(currentMessage.speed + 30 < currentMessage.currentGear * 20) {
+                    if (currentMessage.speed + 30 < currentMessage.currentGear * 20) {
                         currentMessage.stalled = true;
                     }
                 }
             } else {
-                if (currentMessage.currentGear > 0){
+                if (currentMessage.currentGear > 0) {
                     currentMessage.currentGear -= 1;
                 }
             }
@@ -140,13 +141,12 @@ export default class Connector extends Component {
     }
 
 
-
     accelerate() {
         const accelerationSpeed = 5;
         const maxSpeed = this.state.dataMessage.currentGear * 20;
         console.log("max speed ->" + maxSpeed);
         let currentMessage = this.state.dataMessage;
-        if (!currentMessage.isClutchDown){
+        if (!currentMessage.isClutchDown) {
             if (currentMessage.speed < maxSpeed && currentMessage.stalled !== true) {
                 currentMessage.speed += accelerationSpeed;
                 this.setState({dataMessage: currentMessage});
@@ -160,7 +160,7 @@ export default class Connector extends Component {
         const minSpeed = 0;
         const stallSpeed = (this.state.dataMessage.currentGear - 1) * 20;
         let currentMessage = this.state.dataMessage;
-        if (currentMessage.speed < stallSpeed && !currentMessage.isClutchDown){
+        if (currentMessage.speed < stallSpeed && !currentMessage.isClutchDown) {
             currentMessage.stalled = true;
         }
         if (currentMessage.speed - breakingSpeed >= minSpeed) {
@@ -286,6 +286,7 @@ export default class Connector extends Component {
                     {/*TODO: change these into css classes*/}
                     <div>
                         <LeftRoadSide speed={speed}/>
+                        <RoadStripLeft speed={speed}/>
                     </div>
                     <TestCarAndControls
                         carPosition={carImagePosition}
@@ -293,18 +294,19 @@ export default class Connector extends Component {
                         clutch={clutch}
                         horizontalPosition={horizontalPosition}
                         gear={gear}
-                        isAccelerating = {isAccelerating}
-                        accelerate = {this.accelerate.bind(this)}
-                        isBraking = {isBraking}
-                        brake = {this.brake.bind(this)}
-                        stalled = {stalled}
+                        isAccelerating={isAccelerating}
+                        accelerate={this.accelerate.bind(this)}
+                        isBraking={isBraking}
+                        brake={this.brake.bind(this)}
+                        stalled={stalled}
                         showingNPCinLane1={this.state.dataMessage.showingNPCinLane1}
                         showingNPCinLane2={this.state.dataMessage.showingNPCinLane2}
                         showingNPCinLane3={this.state.dataMessage.showingNPCinLane3}
                         spawnNPC={this.spawnNPC.bind(this)}
                     />
                     {/*TODO: change these into css classes*/}
-                    <div style={{"marginLeft": "90%"}}>
+                    <div>
+                        <RoadStripRight speed={speed}/>
                         <RightRoadSide speed={speed}/>
                     </div>
 
@@ -316,7 +318,6 @@ export default class Connector extends Component {
 
 
 /// Connector ends here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 
 
 export class TestCarAndControls extends Component {
@@ -341,13 +342,13 @@ export class TestCarAndControls extends Component {
             this.setState(({gameTimer}) => ({
                 gameTimer: gameTimer + 1
             }));
-            if (this.props.isAccelerating){
+            if (this.props.isAccelerating) {
                 this.props.accelerate();
             }
-            if (this.props.isBraking){
+            if (this.props.isBraking) {
                 this.props.brake();
             }
-            if (this.props.stalled){
+            if (this.props.stalled) {
                 this.props.brake();
             }
         }, 300)
@@ -379,11 +380,11 @@ export class TestCarAndControls extends Component {
 
         const positionVariant = 90; // A relative value for error because detection may not be pixel perfect.
 
-        let playerX = playerPosition.x + playerPosition.height/2;
-        let playerY = playerPosition.y + playerPosition.width/2;
+        let playerX = playerPosition.x + playerPosition.height / 2;
+        let playerY = playerPosition.y + playerPosition.width / 2;
 
-        let npcX = npcPosition.x + npcPosition.height/2;
-        let npcY = npcPosition.y - npcPosition.width/2;
+        let npcX = npcPosition.x + npcPosition.height / 2;
+        let npcY = npcPosition.y - npcPosition.width / 2;
 
         return Math.abs(playerX - npcX) < positionVariant && (Math.abs(playerY - npcY) < positionVariant);
 
@@ -391,19 +392,19 @@ export class TestCarAndControls extends Component {
 
     npcSpawnHandler(lanePosition, speed) {
         let animationClass = "";
-        if (lanePosition === 1){
+        if (lanePosition === 1) {
             animationClass = "carImage-left-3 npcCarImage";
             if (this.props.showingNPCinLane1) {
                 animationClass += npcAnimationHandler(speed);
             }
         }
-        if (lanePosition === 2){
+        if (lanePosition === 2) {
             animationClass = "carImage-middle npcCarImage";
             if (this.props.showingNPCinLane2) {
                 animationClass += npcAnimationHandler(speed);
             }
         }
-        if (lanePosition === 3){
+        if (lanePosition === 3) {
             animationClass = "carImage-right-3 npcCarImage";
             if (this.props.showingNPCinLane3) {
                 animationClass += npcAnimationHandler(speed);
@@ -458,23 +459,23 @@ export class TestCarAndControls extends Component {
 
         let carImage = null;
 
-        if (stalled){
-            if(speed > 0){
+        if (stalled) {
+            if (speed > 0) {
                 carImage = player_stall;
             } else {
                 carImage = player_stall_idle;
             }
 
         } else {
-            if(speed > 0 && speed < 21){
+            if (speed > 0 && speed < 21) {
                 carImage = player_speed_1;
-            } else if(speed > 20 && speed < 41){
+            } else if (speed > 20 && speed < 41) {
                 carImage = player_speed_2;
-            } else if(speed > 40 && speed < 61){
+            } else if (speed > 40 && speed < 61) {
                 carImage = player_speed_3;
-            } else if(speed > 60 && speed < 81){
+            } else if (speed > 60 && speed < 81) {
                 carImage = player_speed_4;
-            } else if(speed > 80){
+            } else if (speed > 80) {
                 carImage = player_speed_5;
             } else {
                 carImage = player_idle;
@@ -485,11 +486,11 @@ export class TestCarAndControls extends Component {
             <div>
                 <div className="Buttons">
                     {this.props.showingNPCinLane1 ? null :
-                            <button onClick={() => {
-                                this.props.spawnNPC(true, 1);
-                                this.npcSpawnHandler(1, speed);
-                            }}>Spawn car in lane 1
-                            </button>
+                        <button onClick={() => {
+                            this.props.spawnNPC(true, 1);
+                            this.npcSpawnHandler(1, speed);
+                        }}>Spawn car in lane 1
+                        </button>
                     }
                     {this.props.showingNPCinLane2 ? null :
                         <button onClick={() => {
