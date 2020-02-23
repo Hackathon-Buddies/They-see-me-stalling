@@ -39,9 +39,10 @@ class SelectionPage extends Component {
             rejectUnauthorized: false
         });
         console.log("connecting to server on :", uri); // Add heroku URL
-        this.socket.on("roleSelectorMessage", data => {
+        this.socket.on("getOpenRoles", data => {
             this.setState({selector: data});
         });
+
     }
 
     submitData(data) {
@@ -101,10 +102,6 @@ class SelectionPage extends Component {
         return currentRoleSelector;
     }
 
-    handleRole() {
-
-
-    }
 
 
     render() {
