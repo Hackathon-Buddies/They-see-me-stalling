@@ -14,12 +14,23 @@ import player_speed_4 from "../../assets/carGifs/movement/player-speed-4.gif"
 import player_speed_5 from "../../assets/carGifs/movement/player-speed-5.gif"
 import player_stall from "../../assets/carGifs/stall/player-stall.gif"
 import player_stall_idle from "../../assets/carGifs/stall/player-stall-idle.gif"
-import acceleration_up from "../../assets/controls/accelerationUp.PNG"
-import acceleration_down from "../../assets/controls/accelerationDown.PNG"
-import brake_up from "../../assets/controls/brakeUp.PNG"
-import brake_down from "../../assets/controls/brakeDown.PNG"
-import clutch_up from "../../assets/controls/clutchUp.PNG"
-import clutch_down from "../../assets/controls/clutchDown.PNG"
+import acceleration_up from "../../assets/controls/accelerationUp.png"
+import acceleration_down from "../../assets/controls/accelerationDown.png"
+import brake_up from "../../assets/controls/brakeUp.png"
+import brake_down from "../../assets/controls/brakeDown.png"
+import clutch_up from "../../assets/controls/clutchUp.png"
+import clutch_down from "../../assets/controls/clutchDown.png"
+import gear_0 from "../../assets/controls/gear-0.png"
+import gear_1 from "../../assets/controls/gear-1.png"
+import gear_2 from "../../assets/controls/gear-2.png"
+import gear_3 from "../../assets/controls/gear-3.png"
+import gear_4 from "../../assets/controls/gear-4.png"
+import gear_5 from "../../assets/controls/gear-5.png"
+import wheel_neutral from "../../assets/controls/wheel-neutral.png"
+import wheel_left from "../../assets/controls/wheel-left.png"
+import wheel_right from "../../assets/controls/wheel-right.png"
+
+
 
 
 
@@ -29,7 +40,6 @@ export default class Connector extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             dataMessage: {
                 horizontalPosition: 0,
@@ -39,6 +49,8 @@ export default class Connector extends Component {
                 isClutchDown: false,
                 isAccelerating: false,
                 isBraking: false,
+                turningLeft: false,
+                turningRight: false,
                 stalled: false,
                 showingNPCinLane1: false,
                 showingNPCinLane2: false,
@@ -179,23 +191,50 @@ export default class Connector extends Component {
         return currentMessage
     }
 
-    turningLeft() {
+    turningLeft(bool) {
+        console.log("Break pedal released");
         let currentMessage = this.state.dataMessage;
-        let maxLeft = -3;
-        if (currentMessage.horizontalPosition - 1 >= maxLeft) {
-            currentMessage.horizontalPosition -= 1;
-        }
+        currentMessage.turningLeft = bool;
         this.setState({dataMessage: currentMessage});
         return currentMessage
     }
 
-    turningRight() {
+    turnLeft() {
+        let currentMessage = this.state.dataMessage;
+        let maxLeft = -3;
+        const turningSpeed = 0.2;
+        console.log(currentMessage.horizontalPosition);
+        if (currentMessage.horizontalPosition - turningSpeed >= maxLeft) {
+            currentMessage.horizontalPosition -= turningSpeed;
+            this.setState({dataMessage: currentMessage});
+        } else {
+            currentMessage.horizontalPosition = maxLeft;
+            this.setState({dataMessage: currentMessage});
+        }
+
+        return currentMessage
+    }
+
+    turningRight(bool) {
+        let currentMessage = this.state.dataMessage;
+        currentMessage.turningRight = bool;
+        this.setState({dataMessage: currentMessage});
+        return currentMessage
+    }
+
+    turnRight() {
         let currentMessage = this.state.dataMessage;
         let maxRight = 3;
-        if (currentMessage.horizontalPosition + 1 <= maxRight) {
-            currentMessage.horizontalPosition += 1;
+        const turningSpeed = 0.1;
+        console.log(currentMessage.horizontalPosition);
+        currentMessage.horizontalPosition += turningSpeed;
+        if (currentMessage.horizontalPosition + turningSpeed <= maxRight) {
+            currentMessage.horizontalPosition += turningSpeed;
+            this.setState({dataMessage: currentMessage});
+        } else {
+            currentMessage.horizontalPosition = maxRight;
+            this.setState({dataMessage: currentMessage});
         }
-        this.setState({dataMessage: currentMessage});
         return currentMessage
     }
 
@@ -220,11 +259,43 @@ export default class Connector extends Component {
         let isBraking = this.state.dataMessage.isBraking;
         let clutch = this.state.dataMessage.isClutchDown;
         let stalled = this.state.dataMessage.stalled;
+        let turningLeft = this.state.dataMessage.turningLeft;
+        let turningRight = this.state.dataMessage.turningRight;
         let carImagePosition;
-
         let accelerationImg = acceleration_up;
         let brakeImg = brake_up;
         let clutchImg = clutch_up;
+        let gearImg = "";
+
+        switch (gear) {
+            case 1:
+                gearImg = gear_1;
+                break;
+            case 2:
+                gearImg = gear_2;
+                break;
+            case 3:
+                gearImg = gear_3;
+                break;
+            case 4:
+                gearImg = gear_4;
+                break;
+            case 5:
+                gearImg = gear_5;
+                break;
+            default:
+                gearImg = gear_0;
+                break;
+        }
+
+        let wheelImg = wheel_neutral;
+
+        if(turningLeft){
+            wheelImg = wheel_left;
+        }
+        if(turningRight){
+            wheelImg = wheel_right;
+        }
 
         if (isAccelerating){
             accelerationImg = acceleration_down;
@@ -238,7 +309,7 @@ export default class Connector extends Component {
             clutchImg = clutch_down;
         }
 
-        switch (this.state.dataMessage.horizontalPosition) {
+        switch (Math.floor(this.state.dataMessage.horizontalPosition)) {
             case 3:
                 carImagePosition = "carImage-right-3 playerCar";
                 break;
@@ -264,10 +335,6 @@ export default class Connector extends Component {
         return (
             <div>
                 <div>
-                    <p>Showing npc lane 1 ->{this.state.dataMessage.showingNPCinLane1.toString()}</p>
-                    <p>Showing npc lane 2 ->{this.state.dataMessage.showingNPCinLane2.toString()}</p>
-                    <p>Showing npc lane 3 ->{this.state.dataMessage.showingNPCinLane3.toString()}</p>
-
                     <img
                         className="ControlImage"
                         src={accelerationImg}
@@ -292,19 +359,35 @@ export default class Connector extends Component {
                         onMouseUp={() => this.submitData(this.clutchUp())}
                     >
                     </img>
+                    <img
+                        className="ControlImage"
+                        src={gearImg}
+                        alt="gearPic"
+                    >
+                    </img>
+                    <img
+                        className="ControlImage"
+                        src={wheelImg}
+                        alt="wheelPic"
+                    >
+                    </img>
 
                     <button onClick={() => this.submitData(this.gearUp(true))}>Gear Up</button>
                     <button onClick={() => this.submitData(this.gearUp(false))}>Gear Down</button>
 
-                    <button onClick={() => this.submitData(this.turningLeft())}>
-                        left
+                    <button
+                        onMouseDown={() => this.submitData(this.turningLeft(true))}
+                        onMouseUp={() => this.submitData(this.turningLeft(false))}
+                    >
+                        Left
                     </button>
 
-                    <button onClick={() => this.submitData(this.turningRight())}>
-                        right
+                    <button
+                        onMouseDown={() => this.submitData(this.turningRight(true))}
+                        onMouseUp={() => this.submitData(this.turningRight(false))}
+                    >
+                        Right
                     </button>
-
-
                 </div>
 
 
@@ -324,6 +407,10 @@ export default class Connector extends Component {
                         isBraking = {isBraking}
                         brake = {this.brake.bind(this)}
                         stalled = {stalled}
+                        turnLeft = {this.turnLeft.bind(this)}
+                        turningLeft ={turningLeft}
+                        turnRight = {this.turnRight.bind(this)}
+                        turningRight ={turningRight}
                         showingNPCinLane1={this.state.dataMessage.showingNPCinLane1}
                         showingNPCinLane2={this.state.dataMessage.showingNPCinLane2}
                         showingNPCinLane3={this.state.dataMessage.showingNPCinLane3}
@@ -375,6 +462,12 @@ export class TestCarAndControls extends Component {
             }
             if (this.props.stalled){
                 this.props.brake();
+            }
+            if (this.props.turningLeft){
+                this.props.turnLeft();
+            }
+            if (this.props.turningRight){
+                this.props.turnRight();
             }
         }, 100)
 
@@ -478,6 +571,8 @@ export class TestCarAndControls extends Component {
         let isBraking = this.props.isBraking;
         let clutch = this.props.clutch;
         let stalled = this.props.stalled;
+        let turningLeft = this.props.turningLeft;
+        let turningRight = this.props.turningRight;
 
         let npc1Class = this.npcSpawnHandler(1, speed);
         let npc2Class = this.npcSpawnHandler(2, speed);
@@ -508,55 +603,34 @@ export class TestCarAndControls extends Component {
             }
         }
 
-        const anyLaneShowing = false;
-            //this.props.showingNPCinLane1 ||
-            //this.props.showingNPCinLane2 ||
-            //this.props.showingNPCinLane3;
-
         return (
             <div>
-                {anyLaneShowing ? null :
-                    <div className="Buttons">
-                        {this.props.showingNPCinLane1 ? null :
-                            <button onClick={() => {
-                                this.props.spawnNPC(true, 1);
-                                this.npcSpawnHandler(1, speed);
-                            }}>Spawn car in lane 1
-                            </button>
-                        }
-                        {this.props.showingNPCinLane2 ? null :
-                            <button onClick={() => {
-                                this.props.spawnNPC(true, 2);
-                                this.npcSpawnHandler(2, speed);
-                            }}>Spawn car in lane 2
-                            </button>
-                        }
-                        {this.props.showingNPCinLane3 ? null :
-                            <button onClick={() => {
-                                this.props.spawnNPC(true, 3);
-                                this.npcSpawnHandler(3, speed);
-                            }}>Spawn car in lane 3
-                            </button>
-                        }
-                    </div>
-                }
+                <div className="SpawningButtons">
+                    {this.props.showingNPCinLane1 ? null :
+                        <button onClick={() => {
+                            this.props.spawnNPC(true, 1);
+                            this.npcSpawnHandler(1, speed);
+                        }}>Spawn car in lane 1
+                        </button>
+                    }
+                    {this.props.showingNPCinLane2 ? null :
+                        <button onClick={() => {
+                            this.props.spawnNPC(true, 2);
+                            this.npcSpawnHandler(2, speed);
+                        }}>Spawn car in lane 2
+                        </button>
+                    }
+                    {this.props.showingNPCinLane3 ? null :
+                        <button onClick={() => {
+                            this.props.spawnNPC(true, 3);
+                            this.npcSpawnHandler(3, speed);
+                        }}>Spawn car in lane 3
+                        </button>
+                    }
+                </div>
                     <p>
                         Speed ->{speed}
                     </p>
-                    <p>
-                        Left/Right ->{horizontalPosition}
-                    </p>
-                    <p>
-                        Gear ->{gear}
-                    </p>
-                    <div>
-                        <p>isAccelerating ->{isAccelerating.toString()} </p>
-                        <p>isBraking ->{isBraking.toString()}</p>
-                        <p>Clutch ->{clutch.toString()} </p>
-                        <p>Stalled ->{stalled.toString()}</p>
-                    </div>
-
-
                 <div className="carDiv">
                     <img className={carImagePosition} ref={this.playerRef} src={carImage} alt={"car"}/>
 
