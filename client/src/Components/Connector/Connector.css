@@ -1,48 +1,48 @@
 .carImage-left-3 {
-    height: 200px;
-    width: 70px;
+    height: 300px;
+    width: 200px;
     position: absolute;
     right: 56%;
 }
 
 .carImage-left-2 {
-    height: 200px;
-    width: 70px;
+    height: 300px;
+    width: 200px;
     position: absolute;
     right: 53%;
 }
 
 .carImage-left-1 {
-    height: 200px;
-    width: 70px;
+    height: 300px;
+    width: 200px;
     position: absolute;
     right: 50%;
 }
 
 .carImage-right-3 {
-    height: 200px;
-    width: 70px;
+    height: 300px;
+    width: 200px;
     position: absolute;
     left: 56%;
 }
 
 .carImage-right-2 {
-    height: 200px;
-    width: 70px;
+    height: 300px;
+    width: 200px;
     position: absolute;
     left: 53%;
 }
 
 .carImage-right-1 {
-    height: 200px;
-    width: 70px;
+    height: 300px;
+    width: 200px;
     position: absolute;
     left: 51%;
 }
 
 .carImage-middle {
-    height: 200px;
-    width: 70px;
+    height: 300px;
+    width: 200px;
     position: absolute;
     left: 49%;
 }

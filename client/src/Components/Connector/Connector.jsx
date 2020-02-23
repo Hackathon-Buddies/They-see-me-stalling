@@ -1,12 +1,18 @@
 import React, {Component} from 'react'
 import io from 'socket.io-client';
-import carImg from "../../assets/images.jpg"
 import npcCar from "../../assets/npc-car.png"
 import "./Connector.css"
 import '../../App.css';
 import "../Road/RoadAnimations.css"
 import {LeftRoadSide, RightRoadSide, sideAnimationController} from "../Road/RoadSide";
 import ReactDOM from "react-dom";
+import player_idle from "../../assets/carGifs/movement/player-idle.png"
+import player_speed_1 from "../../assets/carGifs/movement/player-speed-1.gif"
+import player_speed_2 from "../../assets/carGifs/movement/player-speed-2.gif"
+import player_speed_3 from "../../assets/carGifs/movement/player-speed-3.gif"
+import player_speed_4 from "../../assets/carGifs/movement/player-speed-4.gif"
+import player_speed_5 from "../../assets/carGifs/movement/player-speed-5.gif"
+import player_stall from "../../assets/carGifs/stall/player-stall.gif"
 
 
 const port = 5000; // Server port. TODO: import form server.js once they are under the same src
@@ -152,7 +158,6 @@ export default class Connector extends Component {
         const stallSpeed = (this.state.dataMessage.currentGear - 1) * 20;
         let currentMessage = this.state.dataMessage;
         if (currentMessage.speed < stallSpeed && !currentMessage.isClutchDown){
-            console.log("You stalled mofo!!!");
             currentMessage.stalled = true;
         }
         if (currentMessage.speed - breakingSpeed >= minSpeed) {
@@ -433,6 +438,7 @@ export class TestCarAndControls extends Component {
 
     }
 
+
     render() {
         let carImagePosition = this.props.carPosition;
         let speed = this.props.speed;
@@ -446,6 +452,26 @@ export class TestCarAndControls extends Component {
         let npc1Class = this.npcSpawnHandler(1, speed);
         let npc2Class = this.npcSpawnHandler(2, speed);
         let npc3Class = this.npcSpawnHandler(3, speed);
+
+        let carImage = null;
+
+        if (stalled){
+            carImage = player_stall;
+        } else {
+            if(speed > 0 && speed < 21){
+                carImage = player_speed_1;
+            } else if(speed > 20 && speed < 41){
+                carImage = player_speed_2;
+            } else if(speed > 40 && speed < 61){
+                carImage = player_speed_3;
+            } else if(speed > 60 && speed < 81){
+                carImage = player_speed_4;
+            } else if(speed > 80){
+                carImage = player_speed_5;
+            } else {
+                carImage = player_idle;
+            }
+        }
 
         return (
             <div>
@@ -489,7 +515,7 @@ export class TestCarAndControls extends Component {
                 </div>
 
                 <div className="carDiv">
-                    <img className={carImagePosition} ref={this.playerRef} src={carImg} alt={"car"}/>
+                    <img className={carImagePosition} ref={this.playerRef} src={carImage} alt={"car"}/>
 
                     <img className={npc1Class} ref={this.npcRef1} src={npcCar} alt={"npcCar1"}/>
                     <img className={npc2Class} ref={this.npcRef2} src={npcCar} alt={"npcCar2"}/>
