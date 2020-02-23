@@ -5,6 +5,8 @@ import SoundComponent from "../Music/SoundComponent";
 import soundfile from '../../assets/MusicAssets/BMusic.mp3'
 import Sound from 'react-sound';
 import Intro from "../Intro/Intro";
+import SelectionPage from "../SelectionPage/SelectionPage";
+
 
 class HomePage extends Component  {
     constructor(props) {

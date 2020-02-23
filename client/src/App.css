@@ -1,12 +1,15 @@
 .App {
+  flex: auto;
   text-align: center;
+  max-width: available;
+  max-height: available;
 }
 
 .leftRoadSide{
   left: -30%;
 }
 
-.row{display:flex; flex-direction:row; text-align: center; justify-content: center}
+.row{display:flex; flex-direction:row; text-align: center; justify-content: center; max-width: 100%}
 
 .App-logo {
   height: 40vmin;
