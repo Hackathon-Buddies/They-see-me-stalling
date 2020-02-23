@@ -202,7 +202,10 @@ export default class Connector extends Component {
     turnLeft() {
         let currentMessage = this.state.dataMessage;
         let maxLeft = -3;
-        const turningSpeed = 0.2;
+        let turningSpeed = 0.1;
+        if(this.state.dataMessage.speed/20 > turningSpeed){
+            turningSpeed = this.state.dataMessage.speed/20;
+        }
         console.log(currentMessage.horizontalPosition);
         if (currentMessage.horizontalPosition - turningSpeed >= maxLeft) {
             currentMessage.horizontalPosition -= turningSpeed;
@@ -225,7 +228,10 @@ export default class Connector extends Component {
     turnRight() {
         let currentMessage = this.state.dataMessage;
         let maxRight = 3;
-        const turningSpeed = 0.1;
+        let turningSpeed = 0.1;
+        if(this.state.dataMessage.speed/20 > turningSpeed){
+            turningSpeed = this.state.dataMessage.speed/20;
+        }
         console.log(currentMessage.horizontalPosition);
         currentMessage.horizontalPosition += turningSpeed;
         if (currentMessage.horizontalPosition + turningSpeed <= maxRight) {
@@ -335,20 +341,12 @@ export default class Connector extends Component {
         return (
             <div>
                 <div>
+                    <button onClick={() => this.submitData(this.gearUp(true))}>Gear Up</button>
+                    <button onClick={() => this.submitData(this.gearUp(false))}>Gear Down</button>
                     <img
                         className="ControlImage"
-                        src={accelerationImg}
-                        alt="accelerationPic"
-                        onMouseDown={() => this.submitData(this.accelerateDown())}
-                        onMouseUp={() => this.submitData(this.accelerateUp())}
-                    >
-                    </img>
-                    <img
-                        className="ControlImage"
-                        src={brakeImg}
-                        alt="brakePic"
-                        onMouseDown={() => this.submitData(this.brakeDown())}
-                        onMouseUp={() => this.submitData(this.brakeUp())}
+                        src={gearImg}
+                        alt="gearPic"
                     >
                     </img>
                     <img
@@ -361,10 +359,32 @@ export default class Connector extends Component {
                     </img>
                     <img
                         className="ControlImage"
-                        src={gearImg}
-                        alt="gearPic"
+                        src={brakeImg}
+                        alt="brakePic"
+                        onMouseDown={() => this.submitData(this.brakeDown())}
+                        onMouseUp={() => this.submitData(this.brakeUp())}
                     >
                     </img>
+                    <img
+                        className="ControlImage"
+                        src={accelerationImg}
+                        alt="accelerationPic"
+                        onMouseDown={() => this.submitData(this.accelerateDown())}
+                        onMouseUp={() => this.submitData(this.accelerateUp())}
+                    >
+                    </img>
+                    <button
+                        onMouseDown={() => this.submitData(this.turningLeft(true))}
+                        onMouseUp={() => this.submitData(this.turningLeft(false))}
+                    >
+                        Left
+                    </button>
+                    <button
+                        onMouseDown={() => this.submitData(this.turningRight(true))}
+                        onMouseUp={() => this.submitData(this.turningRight(false))}
+                    >
+                        Right
+                    </button>
                     <img
                         className="ControlImage"
                         src={wheelImg}
@@ -372,22 +392,6 @@ export default class Connector extends Component {
                     >
                     </img>
 
-                    <button onClick={() => this.submitData(this.gearUp(true))}>Gear Up</button>
-                    <button onClick={() => this.submitData(this.gearUp(false))}>Gear Down</button>
-
-                    <button
-                        onMouseDown={() => this.submitData(this.turningLeft(true))}
-                        onMouseUp={() => this.submitData(this.turningLeft(false))}
-                    >
-                        Left
-                    </button>
-
-                    <button
-                        onMouseDown={() => this.submitData(this.turningRight(true))}
-                        onMouseUp={() => this.submitData(this.turningRight(false))}
-                    >
-                        Right
-                    </button>
                 </div>
 
 
