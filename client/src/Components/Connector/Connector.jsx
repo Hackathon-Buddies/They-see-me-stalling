@@ -13,6 +13,7 @@ import player_speed_3 from "../../assets/carGifs/movement/player-speed-3.gif"
 import player_speed_4 from "../../assets/carGifs/movement/player-speed-4.gif"
 import player_speed_5 from "../../assets/carGifs/movement/player-speed-5.gif"
 import player_stall from "../../assets/carGifs/stall/player-stall.gif"
+import player_stall_idle from "../../assets/carGifs/stall/player-stall-idle.gif"
 
 
 const port = 5000; // Server port. TODO: import form server.js once they are under the same src
@@ -145,9 +146,11 @@ export default class Connector extends Component {
         const maxSpeed = this.state.dataMessage.currentGear * 20;
         console.log("max speed ->" + maxSpeed);
         let currentMessage = this.state.dataMessage;
-        if (currentMessage.speed < maxSpeed && currentMessage.stalled !== true) {
-            currentMessage.speed += accelerationSpeed;
-            this.setState({dataMessage: currentMessage});
+        if (!currentMessage.isClutchDown){
+            if (currentMessage.speed < maxSpeed && currentMessage.stalled !== true) {
+                currentMessage.speed += accelerationSpeed;
+                this.setState({dataMessage: currentMessage});
+            }
         }
         return currentMessage
     }
@@ -456,7 +459,12 @@ export class TestCarAndControls extends Component {
         let carImage = null;
 
         if (stalled){
-            carImage = player_stall;
+            if(speed > 0){
+                carImage = player_stall;
+            } else {
+                carImage = player_stall_idle;
+            }
+
         } else {
             if(speed > 0 && speed < 21){
                 carImage = player_speed_1;
