@@ -14,6 +14,13 @@ import player_speed_4 from "../../assets/carGifs/movement/player-speed-4.gif"
 import player_speed_5 from "../../assets/carGifs/movement/player-speed-5.gif"
 import player_stall from "../../assets/carGifs/stall/player-stall.gif"
 import player_stall_idle from "../../assets/carGifs/stall/player-stall-idle.gif"
+import acceleration_up from "../../assets/controls/accelerationUp.PNG"
+import acceleration_down from "../../assets/controls/accelerationDown.PNG"
+import brake_up from "../../assets/controls/brakeUp.PNG"
+import brake_down from "../../assets/controls/brakeDown.PNG"
+import clutch_up from "../../assets/controls/clutchUp.PNG"
+import clutch_down from "../../assets/controls/clutchDown.PNG"
+
 
 
 const port = 5000; // Server port. TODO: import form server.js once they are under the same src
@@ -216,6 +223,22 @@ export default class Connector extends Component {
         let stalled = this.state.dataMessage.stalled;
         let carImagePosition;
 
+        let accelerationImg = acceleration_up;
+        let brakeImg = brake_up;
+        let clutchImg = clutch_up;
+
+        if (isAccelerating){
+            accelerationImg = acceleration_down;
+        }
+
+        if(isBraking){
+            brakeImg = brake_down;
+        }
+
+        if(clutch){
+            clutchImg = clutch_down;
+        }
+
         switch (this.state.dataMessage.horizontalPosition) {
             case 3:
                 carImagePosition = "carImage-right-3 playerCar";
@@ -246,26 +269,30 @@ export default class Connector extends Component {
                     <p>Showing npc lane 2 ->{this.state.dataMessage.showingNPCinLane2.toString()}</p>
                     <p>Showing npc lane 3 ->{this.state.dataMessage.showingNPCinLane3.toString()}</p>
 
-                    <button
+                    <img
+                        className="ControlImage"
+                        src={accelerationImg}
+                        alt="accelerationPic"
                         onMouseDown={() => this.submitData(this.accelerateDown())}
                         onMouseUp={() => this.submitData(this.accelerateUp())}
                     >
-                        accelerate
-                    </button>
-
-                    <button
+                    </img>
+                    <img
+                        className="ControlImage"
+                        src={brakeImg}
+                        alt="brakePic"
                         onMouseDown={() => this.submitData(this.brakeDown())}
                         onMouseUp={() => this.submitData(this.brakeUp())}
                     >
-                        brake
-                    </button>
-
-                    <button
+                    </img>
+                    <img
+                        className="ControlImage"
+                        src={clutchImg}
+                        alt="clutchPic"
                         onMouseDown={() => this.submitData(this.clutchDown())}
                         onMouseUp={() => this.submitData(this.clutchUp())}
                     >
-                        clutch
-                    </button>
+                    </img>
 
                     <button onClick={() => this.submitData(this.gearUp(true))}>Gear Up</button>
                     <button onClick={() => this.submitData(this.gearUp(false))}>Gear Down</button>
