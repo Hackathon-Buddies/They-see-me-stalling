@@ -340,17 +340,17 @@ export default class Connector extends Component {
         document.body.style.backgroundColor = "white";
         return (
             <div>
-                <div>
-                    <button onClick={() => this.submitData(this.gearUp(true))}>Gear Up</button>
-                    <button onClick={() => this.submitData(this.gearUp(false))}>Gear Down</button>
+                <div className="Controls">
+                    <button className="ControlButton5" onClick={() => this.submitData(this.gearUp(true))}>Gear Up</button>
                     <img
-                        className="ControlImage"
+                        className="ControlImage1"
                         src={gearImg}
                         alt="gearPic"
                     >
                     </img>
+                    <button className="ControlButton6" onClick={() => this.submitData(this.gearUp(false))}>Gear Down</button>
                     <img
-                        className="ControlImage"
+                        className="ControlImage2"
                         src={clutchImg}
                         alt="clutchPic"
                         onMouseDown={() => this.submitData(this.clutchDown())}
@@ -358,7 +358,7 @@ export default class Connector extends Component {
                     >
                     </img>
                     <img
-                        className="ControlImage"
+                        className="ControlImage3"
                         src={brakeImg}
                         alt="brakePic"
                         onMouseDown={() => this.submitData(this.brakeDown())}
@@ -366,7 +366,7 @@ export default class Connector extends Component {
                     >
                     </img>
                     <img
-                        className="ControlImage"
+                        className="ControlImage4"
                         src={accelerationImg}
                         alt="accelerationPic"
                         onMouseDown={() => this.submitData(this.accelerateDown())}
@@ -374,24 +374,26 @@ export default class Connector extends Component {
                     >
                     </img>
                     <button
+                        className="ControlButton7"
                         onMouseDown={() => this.submitData(this.turningLeft(true))}
                         onMouseUp={() => this.submitData(this.turningLeft(false))}
                     >
                         Left
                     </button>
+
+                    <img
+                        className="ControlImage5"
+                        src={wheelImg}
+                        alt="wheelPic"
+                    >
+                    </img>
                     <button
+                        className="ControlButton1"
                         onMouseDown={() => this.submitData(this.turningRight(true))}
                         onMouseUp={() => this.submitData(this.turningRight(false))}
                     >
                         Right
                     </button>
-                    <img
-                        className="ControlImage"
-                        src={wheelImg}
-                        alt="wheelPic"
-                    >
-                    </img>
-
                 </div>
 
 
@@ -610,32 +612,32 @@ export class TestCarAndControls extends Component {
 
         return (
             <div>
-                <div className="SpawningButtons">
+                <div className="SpawningButtons Controls">
                     {this.props.showingNPCinLane1 ? null :
-                        <button onClick={() => {
+                        <button className="ControlButton2" onClick={() => {
                             this.props.spawnNPC(true, 1);
                             this.npcSpawnHandler(1, speed);
                         }}>Spawn car in lane 1
                         </button>
                     }
                     {this.props.showingNPCinLane2 ? null :
-                        <button onClick={() => {
+                        <button className="ControlButton3" onClick={() => {
                             this.props.spawnNPC(true, 2);
                             this.npcSpawnHandler(2, speed);
                         }}>Spawn car in lane 2
                         </button>
                     }
                     {this.props.showingNPCinLane3 ? null :
-                        <button onClick={() => {
+                        <button className="ControlButton4" onClick={() => {
                             this.props.spawnNPC(true, 3);
                             this.npcSpawnHandler(3, speed);
                         }}>Spawn car in lane 3
                         </button>
                     }
-                </div>
                     <p>
                         Speed ->{speed}
                     </p>
+                </div>
                 <div className="carDiv">
                     <img className={carImagePosition} ref={this.playerRef} src={carImage} alt={"car"}/>
 
