@@ -214,7 +214,6 @@ export default class Connector extends Component {
 
     render() {
         let speed = this.state.dataMessage.speed;
-
         let horizontalPosition = this.state.dataMessage.horizontalPosition;
         let gear = this.state.dataMessage.currentGear;
         let isAccelerating = this.state.dataMessage.isAccelerating;
@@ -382,15 +381,15 @@ export class TestCarAndControls extends Component {
     }
 
     componentDidUpdate() {
-        if (!this.state.collision) {
+        if(this.props.showingNPCinLane1 || this.props.showingNPCinLane2 || this.props.showingNPCinLane3){
             this.collisionController(
                 this.positionBindingHandler(this.playerRef.current),
                 this.positionBindingHandler(this.npcRef1.current),
                 this.positionBindingHandler(this.npcRef2.current),
                 this.positionBindingHandler(this.npcRef3.current)
             );
+            console.log("collision: ", this.state.collision);
         }
-        console.log("collision: ", this.state.collision);
     }
 
 
@@ -402,18 +401,44 @@ export class TestCarAndControls extends Component {
         return ReactDOM.findDOMNode(ref).getBoundingClientRect();
     };
 
-    collisionHandler(playerPosition, npcPosition,) {
+    collisionController(playerPosition, npc1Position, npc2Position, npc3Position) {
+        if(this.props.showingNPCinLane1){
+            if (this.collisionHandler(playerPosition, npc1Position,1)) {
+                //this.setState({collision: true});
+                console.log("collision detected at lane 1")
+            }
+        }
+        if(this.props.showingNPCinLane2){
+            if (this.collisionHandler(playerPosition, npc2Position,2)) {
+                //this.setState({collision: true});
+                console.log("collision detected lane 2")
+            }
+        }
+        if(this.props.showingNPCinLane3){
+            if (this.collisionHandler(playerPosition, npc3Position,3)) {
+                //this.setState({collision: true});
+                console.log("collision detected lane 3")
+            }
+        }
+    }
 
+    collisionHandler(playerPosition, npcPosition,lane) {
         const positionVariant = 90; // A relative value for error because detection may not be pixel perfect.
+        const playerX = playerPosition.x + playerPosition.height/2;
+        const playerY = playerPosition.y + playerPosition.width/2;
+        const npcX = npcPosition.x + npcPosition.height/2;
+        const npcY = npcPosition.y - npcPosition.width/2;
 
-        let playerX = playerPosition.x + playerPosition.height/2;
-        let playerY = playerPosition.y + playerPosition.width/2;
-
-        let npcX = npcPosition.x + npcPosition.height/2;
-        let npcY = npcPosition.y - npcPosition.width/2;
+        if (lane === 1 && npcPosition.y > 350) {
+            this.props.spawnNPC(false,1);
+        } else if (lane === 2 && npcPosition.y > 600) {
+            this.props.spawnNPC(false,2);
+        } else if (lane === 3 && npcPosition.y > 700) {
+            this.props.spawnNPC(false,3);
+        }
+        console.log("npcY ->"+ npcPosition.y);
 
         return Math.abs(playerX - npcX) < positionVariant && (Math.abs(playerY - npcY) < positionVariant);
-
     }
 
     npcSpawnHandler(lanePosition, speed) {
@@ -438,36 +463,6 @@ export class TestCarAndControls extends Component {
         }
         return animationClass
     };
-
-    collisionController(playerPosition, npc1Position, npc2Position, npc3Position) {
-        if (
-            this.collisionHandler(
-                playerPosition,
-                npc1Position
-            )) {
-            this.setState({collision: true});
-            console.log("collision detected at lane 1")
-        }
-        if (
-            this.collisionHandler(
-                playerPosition,
-                npc2Position
-            )) {
-            this.setState({collision: true});
-            console.log("collision detected lane 2")
-        }
-        if (
-            this.collisionHandler(
-                playerPosition,
-                npc3Position
-            )) {
-            this.setState({collision: true});
-            console.log("collision detected lane 3")
-
-        }
-
-    }
-
 
     render() {
         let carImagePosition = this.props.carPosition;
