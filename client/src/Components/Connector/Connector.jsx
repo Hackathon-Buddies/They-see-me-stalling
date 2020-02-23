@@ -149,7 +149,7 @@ export default class Connector extends Component {
 
 
     accelerate() {
-        const accelerationSpeed = 5;
+        const accelerationSpeed = 2;
         const maxSpeed = this.state.dataMessage.currentGear * 20;
         console.log("max speed ->" + maxSpeed);
         let currentMessage = this.state.dataMessage;
@@ -163,7 +163,7 @@ export default class Connector extends Component {
     }
 
     brake() {
-        const breakingSpeed = 3;
+        const breakingSpeed = 1;
         const minSpeed = 0;
         const stallSpeed = (this.state.dataMessage.currentGear - 1) * 20;
         let currentMessage = this.state.dataMessage;
@@ -404,19 +404,19 @@ export class TestCarAndControls extends Component {
     collisionController(playerPosition, npc1Position, npc2Position, npc3Position) {
         if(this.props.showingNPCinLane1){
             if (this.collisionHandler(playerPosition, npc1Position,1)) {
-                //this.setState({collision: true});
+                this.setState({collision: true});
                 console.log("collision detected at lane 1")
             }
         }
         if(this.props.showingNPCinLane2){
             if (this.collisionHandler(playerPosition, npc2Position,2)) {
-                //this.setState({collision: true});
+                this.setState({collision: true});
                 console.log("collision detected lane 2")
             }
         }
         if(this.props.showingNPCinLane3){
             if (this.collisionHandler(playerPosition, npc3Position,3)) {
-                //this.setState({collision: true});
+                this.setState({collision: true});
                 console.log("collision detected lane 3")
             }
         }
@@ -429,9 +429,9 @@ export class TestCarAndControls extends Component {
         const npcX = npcPosition.x + npcPosition.height/2;
         const npcY = npcPosition.y - npcPosition.width/2;
 
-        if (lane === 1 && npcPosition.y > 350) {
+        if (lane === 1 && npcPosition.y > 700) {
             this.props.spawnNPC(false,1);
-        } else if (lane === 2 && npcPosition.y > 600) {
+        } else if (lane === 2 && npcPosition.y > 700) {
             this.props.spawnNPC(false,2);
         } else if (lane === 3 && npcPosition.y > 700) {
             this.props.spawnNPC(false,3);
