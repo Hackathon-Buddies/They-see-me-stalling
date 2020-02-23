@@ -30,6 +30,11 @@ import wheel_neutral from "../../assets/controls/wheel-neutral.png"
 import wheel_left from "../../assets/controls/wheel-left.png"
 import wheel_right from "../../assets/controls/wheel-right.png"
 import {RoadStripLeft, RoadStripRight} from "../RoadStrip/RoadStrip";
+import obstacle1 from "../../assets/obstacles/obstacle-1.png"
+import obstacle2 from "../../assets/obstacles/obstacle-2.png"
+import obstacle3 from "../../assets/obstacles/obstacle-3.png"
+import obstacle4 from "../../assets/obstacles/obstacle-4.png"
+
 
 
 
@@ -340,17 +345,17 @@ export default class Connector extends Component {
         document.body.style.backgroundColor = "white";
         return (
             <div>
-                <div>
-                    <button onClick={() => this.submitData(this.gearUp(true))}>Gear Up</button>
-                    <button onClick={() => this.submitData(this.gearUp(false))}>Gear Down</button>
+                <div className="Controls">
+                    <button className="ControlButton5" onClick={() => this.submitData(this.gearUp(true))}>Gear Up</button>
                     <img
-                        className="ControlImage"
+                        className="ControlImage1"
                         src={gearImg}
                         alt="gearPic"
                     >
                     </img>
+                    <button className="ControlButton6" onClick={() => this.submitData(this.gearUp(false))}>Gear Down</button>
                     <img
-                        className="ControlImage"
+                        className="ControlImage2"
                         src={clutchImg}
                         alt="clutchPic"
                         onMouseDown={() => this.submitData(this.clutchDown())}
@@ -358,7 +363,7 @@ export default class Connector extends Component {
                     >
                     </img>
                     <img
-                        className="ControlImage"
+                        className="ControlImage3"
                         src={brakeImg}
                         alt="brakePic"
                         onMouseDown={() => this.submitData(this.brakeDown())}
@@ -366,7 +371,7 @@ export default class Connector extends Component {
                     >
                     </img>
                     <img
-                        className="ControlImage"
+                        className="ControlImage4"
                         src={accelerationImg}
                         alt="accelerationPic"
                         onMouseDown={() => this.submitData(this.accelerateDown())}
@@ -374,24 +379,26 @@ export default class Connector extends Component {
                     >
                     </img>
                     <button
+                        className="ControlButton7"
                         onMouseDown={() => this.submitData(this.turningLeft(true))}
                         onMouseUp={() => this.submitData(this.turningLeft(false))}
                     >
                         Left
                     </button>
+
+                    <img
+                        className="ControlImage5"
+                        src={wheelImg}
+                        alt="wheelPic"
+                    >
+                    </img>
                     <button
+                        className="ControlButton1"
                         onMouseDown={() => this.submitData(this.turningRight(true))}
                         onMouseUp={() => this.submitData(this.turningRight(false))}
                     >
                         Right
                     </button>
-                    <img
-                        className="ControlImage"
-                        src={wheelImg}
-                        alt="wheelPic"
-                    >
-                    </img>
-
                 </div>
 
 
@@ -487,7 +494,7 @@ export class TestCarAndControls extends Component {
                     this.positionBindingHandler(this.npcRef2.current),
                     this.positionBindingHandler(this.npcRef3.current)
                 );
-                console.log("collision: ", this.state.collision);
+                //console.log("collision: ", this.state.collision);
             }
         }
     }
@@ -539,7 +546,7 @@ export class TestCarAndControls extends Component {
         } else if (lane === 3 && npcPosition.y > 700) {
             this.props.spawnNPC(false,3);
         }
-        console.log("npcY ->"+ npcPosition.y);
+        //console.log("npcY ->"+ npcPosition.y);
 
         return Math.abs(playerX - npcX) < positionVariant && (Math.abs(playerY - npcY) < positionVariant);
     }
@@ -567,6 +574,7 @@ export class TestCarAndControls extends Component {
         return animationClass
     };
 
+
     render() {
         let carImagePosition = this.props.carPosition;
         let speed = this.props.speed;
@@ -582,6 +590,10 @@ export class TestCarAndControls extends Component {
         let npc1Class = this.npcSpawnHandler(1, speed);
         let npc2Class = this.npcSpawnHandler(2, speed);
         let npc3Class = this.npcSpawnHandler(3, speed);
+
+        let lane1Img;
+        let lane2Img;
+        let lane3Img;
 
         let carImage = null;
 
@@ -608,40 +620,41 @@ export class TestCarAndControls extends Component {
             }
         }
 
+        let images = [obstacle1, obstacle2, obstacle3, obstacle4];
+        let npcImg = images[Math.floor(speed%images.length)];
         return (
             <div>
-                <div className="SpawningButtons">
+                <div className="SpawningButtons Controls">
                     {this.props.showingNPCinLane1 ? null :
-                        <button onClick={() => {
+                        <button className="ControlButton2" onClick={() => {
                             this.props.spawnNPC(true, 1);
                             this.npcSpawnHandler(1, speed);
                         }}>Spawn car in lane 1
                         </button>
                     }
                     {this.props.showingNPCinLane2 ? null :
-                        <button onClick={() => {
+                        <button className="ControlButton3" onClick={() => {
                             this.props.spawnNPC(true, 2);
                             this.npcSpawnHandler(2, speed);
                         }}>Spawn car in lane 2
                         </button>
                     }
                     {this.props.showingNPCinLane3 ? null :
-                        <button onClick={() => {
+                        <button className="ControlButton4" onClick={() => {
                             this.props.spawnNPC(true, 3);
                             this.npcSpawnHandler(3, speed);
                         }}>Spawn car in lane 3
                         </button>
                     }
-                </div>
                     <p>
                         Speed ->{speed}
                     </p>
+                </div>
                 <div className="carDiv">
                     <img className={carImagePosition} ref={this.playerRef} src={carImage} alt={"car"}/>
-
-                    <img className={npc1Class} ref={this.npcRef1} src={npcCar} alt={"npcCar1"}/>
-                    <img className={npc2Class} ref={this.npcRef2} src={npcCar} alt={"npcCar2"}/>
-                    <img className={npc3Class} ref={this.npcRef3} src={npcCar} alt={"npcCar3"}/>
+                    <img className={npc1Class} ref={this.npcRef1} src={npcImg} alt={"npcCar1"}/>
+                    <img className={npc2Class} ref={this.npcRef2} src={npcImg} alt={"npcCar2"}/>
+                    <img className={npc3Class} ref={this.npcRef3} src={npcImg} alt={"npcCar3"}/>
                 </div>
             </div>
         );
@@ -682,3 +695,4 @@ const npcAnimationHandler = (speed) => {
     }
     return npcAnimation
 };
+

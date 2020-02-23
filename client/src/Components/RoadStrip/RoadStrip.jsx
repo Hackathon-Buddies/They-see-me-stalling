@@ -47,31 +47,31 @@ const animationController = (speed) => {
             sideAnimation = "roadLine";
             break;
 
-        case (1 < speed && speed < 19):
+        case (0 < speed && speed < 19):
             sideAnimation = "roadLine road-animation-speed-1";
             break;
-        case (19 < speed && speed < 29):
+        case (18 < speed && speed < 29):
             sideAnimation = "roadLine road-animation-speed-2";
             break;
-        case (29 < speed && speed < 39):
+        case (28 < speed && speed < 39):
             sideAnimation = "roadLine road-animation-speed-3";
             break;
-        case (30 < speed && speed < 49):
+        case (38 < speed && speed < 49):
             sideAnimation = "roadLine road-animation-speed-4";
             break;
-        case (49 < speed && speed < 59):
+        case (48 < speed && speed < 59):
             sideAnimation = "roadLine road-animation-speed-5";
             break;
-        case (59 < speed && speed < 69):
+        case (58 < speed && speed < 69):
             sideAnimation = "roadLine road-animation-speed-6";
             break;
 
-        case (69 < speed && speed < 79):
+        case (68 < speed && speed < 79):
             sideAnimation = "roadLine road-animation-speed-7";
             break;
 
-        case (79 < speed):
-            sideAnimation = "roadLine road-animation-speed-7";
+        case (78 < speed):
+            sideAnimation = "roadLine road-animation-speed-8";
             break;
 
 
